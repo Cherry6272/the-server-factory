@@ -22,6 +22,12 @@ type Mode = 'quick' | 'custom';
 
 const TIER_ORDER = ['BASIC', 'INTERMEDIATE', 'ADVANCED'] as const;
 
+const TIER_BADGES: Record<string, { label: string; className: string }> = {
+  BASIC: { label: 'Standard', className: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' },
+  INTERMEDIATE: { label: 'Recommended', className: 'bg-brand-50 text-brand-700 dark:bg-brand/20 dark:text-brand-300' },
+  ADVANCED: { label: 'Max Compute', className: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300' },
+};
+
 export function Configurator({
   product,
   groups,
@@ -184,43 +190,60 @@ export function Configurator({
         <div className="grid gap-3 xs:grid-cols-2 xl:grid-cols-3">
           {tierDetails.map(({ tier: t, specs, price }) => {
             const selected = activeTierId === t.id;
+            const badge = TIER_BADGES[t.name] ?? { label: t.name, className: 'bg-gray-100 text-gray-700' };
+
             return (
               <button
                 key={t.id}
                 type="button"
                 onClick={() => setActiveTierId(t.id)}
                 className={cn(
-                  'flex min-w-0 flex-col items-start rounded-2xl border p-4 text-left transition sm:p-5',
+                  'flex min-w-0 h-full flex-col justify-between rounded-2xl border p-4 text-left transition sm:p-5',
                   selected
-                    ? 'border-brand bg-brand-50 ring-2 ring-brand/30 dark:bg-brand/10'
+                    ? 'border-brand bg-brand-50/70 ring-2 ring-brand/30 dark:bg-brand/10'
                     : 'border-gray-200 bg-white hover:border-brand-300 dark:border-gray-800 dark:bg-gray-900'
                 )}
               >
-                <span className="flex w-full items-start justify-between gap-2">
-                  <span className={cn('text-xs font-bold uppercase tracking-wider', selected ? 'text-brand' : 'text-ink-muted dark:text-gray-400')}>
-                    {t.name}
-                  </span>
-                  {selected && <Check className="h-5 w-5 flex-shrink-0 text-brand" />}
-                </span>
-                <span className="mt-1 font-display text-lg font-bold">{t.label}</span>
-                <span className="mt-1 text-base font-extrabold">{formatINR(price)}</span>
-                {t.description && <span className="mt-2 text-xs text-ink-muted dark:text-gray-400">{t.description}</span>}
+                <div>
+                  <div className="flex w-full items-start justify-between gap-2">
+                    <span className={cn('rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider', badge.className)}>
+                      {badge.label}
+                    </span>
+                    {selected && <Check className="h-5 w-5 flex-shrink-0 text-brand" />}
+                  </div>
+
+                  <span className="mt-2 block font-display text-lg font-bold">{t.label}</span>
+
+                  <div className="mt-1">
+                    {price > 0 ? (
+                      <span className="text-base font-extrabold text-ink dark:text-white">{formatINR(price)}</span>
+                    ) : (
+                      <span className="text-xs font-bold uppercase tracking-wider text-brand">Quote on Request</span>
+                    )}
+                  </div>
+
+                  {t.description && (
+                    <span className="mt-2 block text-xs leading-relaxed text-ink-muted dark:text-gray-400">
+                      {t.description}
+                    </span>
+                  )}
+                </div>
 
                 {specs.length > 0 && (
-                  <span className="mt-4 block w-full space-y-1.5 border-t border-gray-200 pt-3 dark:border-gray-700">
+                  <div className="mt-4 w-full space-y-1.5 border-t border-gray-200/80 pt-3 dark:border-gray-700/80">
                     {specs.map((s) =>
                       hideSpecLabels ? (
                         <span key={s.groupLabel} className="block text-xs font-medium">
                           {s.valueLabel}
                         </span>
                       ) : (
-                        <span key={s.groupLabel} className="flex flex-wrap items-baseline justify-between gap-x-2 text-xs">
+                        <div key={s.groupLabel} className="flex flex-wrap items-baseline justify-between gap-x-2 text-xs">
                           <span className="flex-shrink-0 text-ink-muted dark:text-gray-400">{s.groupLabel}</span>
                           <span className="min-w-0 font-medium sm:text-right">{s.valueLabel}</span>
-                        </span>
+                        </div>
                       )
                     )}
-                  </span>
+                  </div>
                 )}
               </button>
             );
@@ -284,11 +307,17 @@ export function Configurator({
       })}
 
       {/* Summary + add to cart */}
-      <div className="sticky bottom-0 z-10 rounded-2xl border border-gray-200 bg-white p-4 shadow-xl dark:border-gray-800 dark:bg-gray-900 sm:p-6">
+      <div className="sticky bottom-0 z-10 rounded-2xl border border-gray-200/90 bg-white/95 p-4 shadow-xl backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/95 sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-2">
           <div>
-            <p className="text-xs uppercase tracking-wider text-ink-muted dark:text-gray-400">Total</p>
-            <p className="text-2xl font-extrabold sm:text-3xl">{formatINR(totalPrice)}</p>
+            <p className="text-xs uppercase tracking-wider text-ink-muted dark:text-gray-400">
+              {totalPrice > 0 ? 'Total Estimate' : 'Configuration Summary'}
+            </p>
+            {totalPrice > 0 ? (
+              <p className="text-2xl font-extrabold text-ink dark:text-white sm:text-3xl">{formatINR(totalPrice)}</p>
+            ) : (
+              <p className="text-xl font-extrabold text-ink dark:text-white sm:text-2xl">Pricing on Request</p>
+            )}
           </div>
           <div className="flex flex-shrink-0 items-center gap-1 rounded-full border border-gray-200 px-1 dark:border-gray-700">
             <button
@@ -310,10 +339,10 @@ export function Configurator({
             onClick={() => handleAdd(false)}
             className={cn('btn-outline flex-1', added && 'border-green-500 text-green-600')}
           >
-            {added ? <><Check className="h-4 w-4" /> Added to Cart</> : <><ShoppingCart className="h-4 w-4" /> Add to Cart</>}
+            {added ? <><Check className="h-4 w-4" /> Added to Cart</> : <><ShoppingCart className="h-4 w-4" /> {totalPrice > 0 ? 'Add to Cart' : 'Save Configuration'}</>}
           </button>
           <button onClick={() => handleAdd(true)} className="btn-brand flex-1">
-            Buy Now →
+            {totalPrice > 0 ? 'Buy Now →' : 'Request Official Quote →'}
           </button>
         </div>
       </div>

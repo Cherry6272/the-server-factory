@@ -95,8 +95,14 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       <div className="mb-6 flex flex-col items-start justify-between gap-4 md:mb-8 md:flex-row md:items-center md:gap-6">
         <div>
           <h1 className="heading-page font-display font-extrabold">
-            {node.name.split(' ')[0]}{' '}
-            <span className="text-brand">{node.name.split(' ').slice(1).join(' ') || 'Catalog'}</span>
+            {node.name.includes(' ') ? (
+              <>
+                {node.name.split(' ')[0]}{' '}
+                <span className="text-brand">{node.name.split(' ').slice(1).join(' ')}</span>
+              </>
+            ) : (
+              <span className="text-ink dark:text-white">{node.name}</span>
+            )}
           </h1>
           {node.description && <p className="mt-2 max-w-2xl text-sm text-ink-muted dark:text-gray-400 md:text-base">{node.description}</p>}
         </div>

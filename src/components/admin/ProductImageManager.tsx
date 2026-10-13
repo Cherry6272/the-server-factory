@@ -14,9 +14,11 @@ export type ProductImageInput = {
 export function ProductImageManager({
   images,
   onChange,
+  defaultAlt,
 }: {
   images: ProductImageInput[];
   onChange: (next: ProductImageInput[]) => void;
+  defaultAlt?: string;
 }) {
   // publicIds that already existed when the form loaded. Anything uploaded in
   // this session and then removed is deleted from Cloudinary immediately —
@@ -26,7 +28,14 @@ export function ProductImageManager({
   );
 
   function add(uploaded: UploadedImage[]) {
-    onChange([...images, ...uploaded.map((u) => ({ url: u.url, publicId: u.publicId, alt: null }))]);
+    onChange([
+      ...images,
+      ...uploaded.map((u) => ({
+        url: u.url,
+        publicId: u.publicId,
+        alt: defaultAlt?.trim() || null,
+      })),
+    ]);
   }
 
   async function remove(index: number) {
@@ -80,13 +89,13 @@ export function ProductImageManager({
               key={`${img.publicId ?? img.url}-${i}`}
               className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
             >
-              <div className="relative aspect-[4/3] bg-gray-100 dark:bg-gray-800">
+              <div className="relative aspect-[4/3] border-b border-gray-100 bg-white p-2 dark:border-gray-800 dark:bg-gray-950/60">
                 <Image
                   src={img.url}
                   alt={img.alt ?? ''}
                   fill
                   sizes="(max-width: 640px) 100vw, 320px"
-                  className="object-cover"
+                  className="object-contain p-1"
                   unoptimized
                 />
                 {i === 0 && (

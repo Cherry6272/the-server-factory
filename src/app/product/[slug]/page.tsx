@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { formatINR } from '@/lib/utils';
 import { getCategoryTree, getBreadcrumb } from '@/lib/categories';
 import { getConfiguratorSettings } from '@/lib/site-settings';
 import { Configurator } from '@/components/product/Configurator';
+import { ProductGallery } from '@/components/product/ProductGallery';
 import { CategoryBreadcrumb } from '@/components/layout/CategoryBreadcrumb';
 
 type Props = { params: { slug: string } };
@@ -97,30 +97,15 @@ export default async function ProductPage({ params }: Props) {
         />
 
         <div className="grid gap-6 lg:grid-cols-2 md:gap-10 lg:items-start 2xl:gap-14">
-          {/* Gallery */}
-          <div className="lg:sticky lg:top-20">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-soft">
-              {product.images[0] && (
-                <Image
-                  src={product.images[0].url}
-                  alt={product.images[0].alt ?? product.name}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
-                  priority
-                />
-              )}
-            </div>
-            {product.images.length > 1 && (
-              <div className="mt-3 grid grid-cols-4 gap-2 xs:grid-cols-5 md:mt-4">
-                {product.images.map((img) => (
-                  <div key={img.id} className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
-                    <Image src={img.url} alt={img.alt ?? ''} fill sizes="(max-width: 1024px) 20vw, 100px" className="object-cover" />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Interactive Gallery */}
+          <ProductGallery
+            images={product.images.map((img) => ({
+              id: img.id,
+              url: img.url,
+              alt: img.alt,
+            }))}
+            productName={product.name}
+          />
 
           {/* Details + configurator */}
           <div>
@@ -128,11 +113,30 @@ export default async function ProductPage({ params }: Props) {
               <p className="text-xs font-bold uppercase tracking-wider text-brand">{product.brand}</p>
             )}
             <h1 className="heading-page mt-1 font-display font-extrabold">{product.name}</h1>
-            {product.shortDesc && <p className="mt-2 text-sm text-ink-muted dark:text-gray-400 sm:text-base md:mt-3 md:text-lg">{product.shortDesc}</p>}
+            {product.shortDesc && (
+              <p className="mt-2 text-sm leading-relaxed text-ink-muted dark:text-gray-400 sm:text-base md:mt-3 md:text-lg">
+                {product.shortDesc}
+              </p>
+            )}
 
             <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-gray-100 pb-4 dark:border-gray-800 md:mt-6 md:pb-6">
-              <span className="text-xs text-ink-muted dark:text-gray-400 md:text-sm">Starting at</span>
-              <span className="text-2xl font-extrabold xs:text-3xl md:text-4xl">{formatINR(product.basePrice)}</span>
+              {Number(product.basePrice) > 0 ? (
+                <>
+                  <span className="text-xs text-ink-muted dark:text-gray-400 md:text-sm">Starting at</span>
+                  <span className="text-2xl font-extrabold xs:text-3xl md:text-4xl text-ink dark:text-white">
+                    {formatINR(product.basePrice)}
+                  </span>
+                </>
+              ) : (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center rounded-md bg-brand-50 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-brand-700 dark:bg-brand/10 dark:text-brand-300">
+                    Enterprise Tier
+                  </span>
+                  <span className="text-xl font-extrabold text-ink dark:text-white sm:text-2xl">
+                    Custom Pricing on Request
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="mt-6 md:mt-8">

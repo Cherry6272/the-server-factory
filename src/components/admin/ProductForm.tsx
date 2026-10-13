@@ -121,6 +121,7 @@ export function ProductForm({ categories, product }: { categories: Category[]; p
         <ProductImageManager
           images={form.images}
           onChange={(images) => setForm({ ...form, images })}
+          defaultAlt={form.name}
         />
       </div>
 

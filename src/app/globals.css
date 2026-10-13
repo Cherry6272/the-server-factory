@@ -93,15 +93,15 @@ body {
 
 .hero-backdrop {
   background-image:
-    radial-gradient(1200px 500px at 10% -20%, rgba(113, 188, 10, 0.15), transparent 60%),
-    radial-gradient(800px 400px at 110% 10%, rgba(113, 188, 10, 0.08), transparent 60%),
-    linear-gradient(180deg, #ffffff 0%, #f3fbe6 100%);
+    radial-gradient(1200px 500px at 10% -20%, rgba(124, 58, 237, 0.12), transparent 60%),
+    radial-gradient(800px 400px at 110% 10%, rgba(109, 40, 217, 0.08), transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #fbf9ff 100%);
 }
 .dark .hero-backdrop {
   background-image:
-    radial-gradient(1200px 500px at 10% -20%, rgba(113, 188, 10, 0.22), transparent 60%),
-    radial-gradient(800px 400px at 110% 10%, rgba(113, 188, 10, 0.12), transparent 60%),
-    linear-gradient(180deg, #0a0f1a 0%, #0a140a 100%);
+    radial-gradient(1200px 500px at 10% -20%, rgba(124, 58, 237, 0.20), transparent 60%),
+    radial-gradient(800px 400px at 110% 10%, rgba(109, 40, 217, 0.12), transparent 60%),
+    linear-gradient(180deg, #0a0f1a 0%, #0d0a1a 100%);
 }
 
 .btn-brand {
@@ -152,8 +152,8 @@ body {
 .spinner {
   width: 24px;
   height: 24px;
-  border: 3px solid rgba(113, 188, 10, 0.2);
-  border-top-color: #71BC0A;
+  border: 3px solid rgba(124, 58, 237, 0.2);
+  border-top-color: #7C3AED;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

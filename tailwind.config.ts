@@ -36,7 +36,7 @@ const config: Config = {
         display: ['"Plus Jakarta Sans"', '"Inter"', 'ui-sans-serif', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       boxShadow: {
-        brand: '0 10px 30px -10px rgba(113, 188, 10, 0.45)',
+        brand: '0 10px 25px -5px rgba(124, 58, 237, 0.35)',
         soft: '0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.04)',
       },
       animation: {
