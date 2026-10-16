@@ -47,14 +47,16 @@ export function ProductGallery({
     <div className="lg:sticky lg:top-24">
       {/* Main Image Stage */}
       <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-gray-200/90 bg-white p-4 shadow-soft dark:border-gray-800 dark:bg-gray-950/60 sm:p-6 md:p-8">
-        <Image
-          src={activeImg.url}
-          alt={activeImg.alt ?? productName}
-          fill
-          priority
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          className="object-contain p-2 transition-all duration-300 md:p-4 group-hover:scale-[1.02]"
-        />
+        <div className="relative h-full w-full">
+          <Image
+            src={activeImg.url}
+            alt={activeImg.alt ?? productName}
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-contain transition-all duration-300 group-hover:scale-[1.02]"
+          />
+        </div>
 
         {/* Image Counter Badge */}
         {images.length > 1 && (

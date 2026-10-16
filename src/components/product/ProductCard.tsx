@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Server } from 'lucide-react';
 import { formatINR } from '@/lib/utils';
+import { cloudinaryUrl } from '@/lib/cloudinary';
 
 type Props = {
   product: {
@@ -26,15 +27,17 @@ export function ProductCard({ product }: Props) {
       className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:shadow-brand dark:border-gray-800 dark:bg-gray-900"
     >
       {/* Product Image Canvas - Normalized Pedestal */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-gray-100 bg-white p-3 dark:border-gray-800/80 dark:bg-gray-950/60 sm:p-4">
+      <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-gray-100 bg-white p-3.5 dark:border-gray-800/80 dark:bg-gray-950/60 sm:p-5">
         {img ? (
-          <Image
-            src={img.url}
-            alt={img.alt ?? product.name}
-            fill
-            sizes="(max-width: 475px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1920px) 25vw, 20vw"
-            className="object-contain p-2 transition-transform duration-500 ease-out group-hover:scale-105"
-          />
+          <div className="relative h-full w-full">
+            <Image
+              src={cloudinaryUrl(img.url, 600)}
+              alt={img.alt ?? product.name}
+              fill
+              sizes="(max-width: 475px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1920px) 25vw, 20vw"
+              className="object-contain transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+            />
+          </div>
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl bg-gray-50 text-gray-400 dark:bg-gray-800/40 dark:text-gray-500">
             <Server className="h-7 w-7 opacity-50" />

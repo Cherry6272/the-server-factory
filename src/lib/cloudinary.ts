@@ -93,10 +93,11 @@ export function collectPublicIds(value: unknown): string[] {
  * Non-Cloudinary URLs (seeded Unsplash links, hand-pasted ones) pass through
  * untouched.
  */
-export function cloudinaryUrl(url: string, width: number): string {
+export function cloudinaryUrl(url: string | null | undefined, width: number): string {
+  if (!url || typeof url !== 'string') return '';
   if (!url.includes('/upload/')) return url;
   if (!/res\.cloudinary\.com|\.cloudinary\.com/.test(url)) return url;
   // Don't stack transformations if one is already present
-  if (/\/upload\/[^/]*[fqw]_/.test(url)) return url;
-  return url.replace('/upload/', `/upload/f_auto,q_auto,w_${width}/`);
+  if (/\/upload\/[^/]*[fqwc]_/.test(url)) return url;
+  return url.replace('/upload/', `/upload/f_auto,q_auto,c_limit,w_${width}/`);
 }

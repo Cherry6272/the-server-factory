@@ -142,15 +142,17 @@ export function AdminProductTable({
             return (
               <div key={p.id} className="card flex flex-col gap-3 p-4">
                 <div className="flex gap-3">
-                  <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white p-1 dark:border-gray-800 dark:bg-gray-950">
+                  <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white p-1.5 dark:border-gray-800 dark:bg-gray-950">
                     {p.images[0] ? (
-                      <Image
-                        src={p.images[0].url}
-                        alt=""
-                        fill
-                        sizes="64px"
-                        className="object-contain p-1"
-                      />
+                      <div className="relative h-full w-full">
+                        <Image
+                          src={p.images[0].url}
+                          alt=""
+                          fill
+                          sizes="64px"
+                          className="object-contain"
+                        />
+                      </div>
                     ) : (
                       <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-gray-600">
                         <Server className="h-6 w-6 opacity-40" />
@@ -234,13 +236,15 @@ export function AdminProductTable({
                           <div className="flex items-center gap-3">
                             <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white p-1 dark:border-gray-800 dark:bg-gray-950">
                               {p.images[0] ? (
-                                <Image
-                                  src={p.images[0].url}
-                                  alt=""
-                                  fill
-                                  sizes="48px"
-                                  className="object-contain p-1"
-                                />
+                                <div className="relative h-full w-full">
+                                  <Image
+                                    src={p.images[0].url}
+                                    alt=""
+                                    fill
+                                    sizes="48px"
+                                    className="object-contain"
+                                  />
+                                </div>
                               ) : (
                                 <div className="flex h-full w-full items-center justify-center text-gray-300 dark:text-gray-600">
                                   <Server className="h-5 w-5 opacity-40" />

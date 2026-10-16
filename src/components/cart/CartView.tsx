@@ -24,8 +24,10 @@ export function CartView() {
         {items.map((item) => (
           <div key={item.key} className="card flex gap-3 p-3 xs:p-4 md:gap-4 md:p-5">
             {item.productImage && (
-              <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 xs:h-20 xs:w-20 md:h-24 md:w-24">
-                <Image src={item.productImage} alt={item.productName} fill sizes="96px" className="object-cover" />
+              <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-white p-1.5 dark:border-gray-800 dark:bg-gray-950 xs:h-20 xs:w-20 md:h-24 md:w-24">
+                <div className="relative h-full w-full">
+                  <Image src={item.productImage} alt={item.productName} fill sizes="96px" className="object-contain" />
+                </div>
               </div>
             )}
             <div className="flex min-w-0 flex-1 flex-col justify-between">

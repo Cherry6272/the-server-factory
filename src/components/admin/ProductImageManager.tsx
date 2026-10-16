@@ -90,14 +90,16 @@ export function ProductImageManager({
               className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
             >
               <div className="relative aspect-[4/3] border-b border-gray-100 bg-white p-2 dark:border-gray-800 dark:bg-gray-950/60">
-                <Image
-                  src={img.url}
-                  alt={img.alt ?? ''}
-                  fill
-                  sizes="(max-width: 640px) 100vw, 320px"
-                  className="object-contain p-1"
-                  unoptimized
-                />
+                <div className="relative h-full w-full">
+                  <Image
+                    src={img.url}
+                    alt={img.alt ?? ''}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 320px"
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
                 {i === 0 && (
                   <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-brand px-2 py-0.5 text-[11px] font-bold text-white">
                     <Star className="h-3 w-3" /> Primary
