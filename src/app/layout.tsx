@@ -13,27 +13,28 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'ServerFactory — Enterprise Servers, Workstations & Components',
-    template: '%s | ServerFactory',
+    default: 'Bytechip Technologies — Enterprise Servers, Workstations & Storage (The Server Factory)',
+    template: '%s | Bytechip Technologies — The Server Factory',
   },
   description:
-    'Buy Dell, HP, Lenovo & NVIDIA enterprise servers, GPU workstations, storage and components online. Configure your build, fast delivery across India.',
+    'Bytechip Technologies (The Server Factory): Buy Dell, HP, Lenovo & NVIDIA enterprise servers, GPU workstations, storage and components online. Fast delivery from Bangalore across India.',
   keywords: [
-    'servers', 'buy servers India', 'dedicated servers', 'GPU servers', 'rack servers',
+    'Bytechip Technologies', 'The Server Factory', 'servers Bangalore', 'buy servers India',
+    'dedicated servers', 'GPU servers', 'rack servers Bangalore', 'JP Nagar server store',
     'Dell PowerEdge', 'HP ProLiant', 'Lenovo ThinkSystem', 'workstations', 'refurbished servers',
     'server components', 'Xeon processors', 'enterprise storage', 'server India',
   ],
   openGraph: {
     type: 'website',
     url: siteUrl,
-    siteName: 'ServerFactory',
-    title: 'ServerFactory — Enterprise Servers & Workstations',
-    description: 'Configure and buy enterprise servers, GPU workstations and components online.',
+    siteName: 'Bytechip Technologies — The Server Factory',
+    title: 'Bytechip Technologies — Enterprise Servers & Workstations',
+    description: 'Configure and buy enterprise servers, GPU workstations and components online from Bangalore.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ServerFactory — Enterprise Servers & Workstations',
-    description: 'Configure and buy enterprise servers, GPU workstations and components online.',
+    title: 'Bytechip Technologies — Enterprise Servers & Workstations',
+    description: 'Configure and buy enterprise servers, GPU workstations and components online from Bangalore.',
   },
   robots: { index: true, follow: true },
   alternates: { canonical: siteUrl },
@@ -42,12 +43,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  // Let users pinch-zoom — capping this is an accessibility failure
   maximumScale: 5,
   viewportFit: 'cover',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0f1a' },
+    { media: '(prefers-color-scheme: dark)', color: '#061527' },
   ],
 };
 
@@ -76,13 +76,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'Organization',
-              name: 'ServerFactory',
+              name: 'Bytechip Technologies (The Server Factory)',
               url: siteUrl,
               logo: `${siteUrl}/logo.svg`,
               sameAs: [],
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: 'No. 8, 24th Main Road, JP Nagar 7th Phase',
+                addressLocality: 'Bangalore',
+                postalCode: '560078',
+                addressRegion: 'Karnataka',
+                addressCountry: 'IN',
+              },
               contactPoint: {
                 '@type': 'ContactPoint',
-                contactType: 'Sales',
+                contactType: 'Sales & Support',
                 email: contact.email,
                 telephone: contact.phone,
                 areaServed: 'IN',

@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --brand: #7C3AED;
-  --brand-dark: #6D28D9;
+  --brand: #0066CC;
+  --brand-dark: #0052A3;
+  --techgreen: #72BF24;
+  --navy: #0B2545;
   --bg: #fafafa;
   --surface: #ffffff;
   --border: #e5e7eb;
@@ -13,11 +15,11 @@
 }
 
 .dark {
-  --bg: #0a0f1a;
-  --surface: #111827;
-  --border: #1f2937;
-  --text: #e5e7eb;
-  --text-muted: #9ca3af;
+  --bg: #061527;
+  --surface: #0B2545;
+  --border: #133966;
+  --text: #f0f4f8;
+  --text-muted: #94a3b8;
 }
 
 html, body { min-height: 100vh; }
@@ -93,15 +95,15 @@ body {
 
 .hero-backdrop {
   background-image:
-    radial-gradient(1200px 500px at 10% -20%, rgba(124, 58, 237, 0.12), transparent 60%),
-    radial-gradient(800px 400px at 110% 10%, rgba(109, 40, 217, 0.08), transparent 60%),
-    linear-gradient(180deg, #ffffff 0%, #fbf9ff 100%);
+    radial-gradient(1200px 500px at 10% -20%, rgba(0, 102, 204, 0.12), transparent 60%),
+    radial-gradient(800px 400px at 110% 10%, rgba(114, 191, 36, 0.10), transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #f4f8fd 100%);
 }
 .dark .hero-backdrop {
   background-image:
-    radial-gradient(1200px 500px at 10% -20%, rgba(124, 58, 237, 0.20), transparent 60%),
-    radial-gradient(800px 400px at 110% 10%, rgba(109, 40, 217, 0.12), transparent 60%),
-    linear-gradient(180deg, #0a0f1a 0%, #0d0a1a 100%);
+    radial-gradient(1200px 500px at 10% -20%, rgba(0, 102, 204, 0.22), transparent 60%),
+    radial-gradient(800px 400px at 110% 10%, rgba(114, 191, 36, 0.12), transparent 60%),
+    linear-gradient(180deg, #061527 0%, #081d36 100%);
 }
 
 .btn-brand {
@@ -152,8 +154,8 @@ body {
 .spinner {
   width: 24px;
   height: 24px;
-  border: 3px solid rgba(124, 58, 237, 0.2);
-  border-top-color: #7C3AED;
+  border: 3px solid rgba(0, 102, 204, 0.2);
+  border-top-color: #0066CC;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

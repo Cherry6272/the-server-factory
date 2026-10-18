@@ -92,9 +92,25 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
             >
               <Menu className="h-5 w-5" />
             </button>
-            <Link href="/" className="wordmark whitespace-nowrap font-display font-extrabold tracking-tight">
-              <span className="text-brand">SERVER</span>
-              <span className="text-ink dark:text-white">FACTORY</span>
+            <Link href="/" className="group flex items-center gap-2">
+              <div className="flex flex-col justify-center">
+                <div className="flex items-center gap-1.5 font-display font-extrabold tracking-tight text-lg xs:text-xl sm:text-2xl leading-none text-navy-900 dark:text-white">
+                  <span>BYTE</span>
+                  <span className="text-techgreen-500 relative">
+                    CHIP
+                    <span className="absolute -top-1 -right-1 flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-techgreen-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-techgreen-500"></span>
+                    </span>
+                  </span>
+                  <span className="hidden sm:inline-flex items-center rounded-md border border-brand-200 bg-brand-50 px-1.5 py-0.5 text-[9px] font-bold text-brand uppercase tracking-wider dark:border-brand-800 dark:bg-brand-950/60 dark:text-brand-300">
+                    SERVER FACTORY
+                  </span>
+                </div>
+                <div className="text-[8px] xs:text-[9px] font-bold tracking-[0.22em] text-techgreen-600 dark:text-techgreen-400 uppercase mt-0.5">
+                  T E C H N O L O G I E S
+                </div>
+              </div>
             </Link>
           </div>
 
@@ -248,8 +264,17 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
           <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
           <div className="absolute left-0 top-0 flex h-full w-80 max-w-[85vw] flex-col bg-white shadow-xl dark:bg-gray-900">
             <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800">
-              <Link href="/" className="font-display text-xl font-extrabold" onClick={() => setMobileOpen(false)}>
-                <span className="text-brand">SERVER</span><span className="dark:text-white">FACTORY</span>
+              <Link href="/" className="flex flex-col" onClick={() => setMobileOpen(false)}>
+                <div className="flex items-center gap-1.5 font-display text-lg font-extrabold text-navy-900 dark:text-white">
+                  <span>BYTE</span>
+                  <span className="text-techgreen-500">CHIP</span>
+                  <span className="rounded bg-brand-50 px-1.5 py-0.5 text-[9px] font-bold text-brand uppercase dark:bg-brand/20">
+                    SERVER FACTORY
+                  </span>
+                </div>
+                <span className="text-[8px] font-bold tracking-[0.2em] text-techgreen-600 dark:text-techgreen-400 uppercase mt-0.5">
+                  T E C H N O L O G I E S
+                </span>
               </Link>
               <button onClick={() => setMobileOpen(false)} className="rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Close menu">
                 <X className="h-5 w-5" />

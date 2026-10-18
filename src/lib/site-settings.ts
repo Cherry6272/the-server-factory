@@ -56,9 +56,9 @@ export type ContactSettings = {
 export const CONTACT_SETTINGS_KEY = 'contact';
 
 export const CONTACT_DEFAULTS: ContactSettings = {
-  email: 'admin@theserverfactory.com',
-  phone: '+91 80 4000 0000',
-  address: 'Bengaluru, Karnataka, India',
+  email: 'sales@theserverfactory.com',
+  phone: '+91 99160 48404',
+  address: 'No. 8, 24th Main Road, JP Nagar 7th Phase,\nBangalore - 560078',
 };
 
 /** Never throws — a missing row or unreachable database falls back to defaults. */
