@@ -2,9 +2,10 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, ShoppingCart, Sparkles, Wrench } from 'lucide-react';
+import { Check, ShoppingCart, Sparkles, Wrench, FileText } from 'lucide-react';
 import { useCart, type CartOption, type CartTier } from '@/components/cart/CartProvider';
 import { formatINR, cn } from '@/lib/utils';
+import { ProductEnquiryModal } from './ProductEnquiryModal';
 
 type OptionValue = { id: string; label: string; priceDelta: number; isDefault: boolean };
 type OptionGroup = { id: string; name: string; label: string; required: boolean; values: OptionValue[] };
@@ -90,11 +91,25 @@ export function Configurator({
 
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const [enquiryModalOpen, setEnquiryModalOpen] = useState(false);
 
   // ── Price calculation ────────────────────
   const activeDetail = tierDetails.find((d) => d.tier.id === activeTierId);
   const activeTier = activeDetail?.tier;
   const activeSelections = mode === 'quick' ? (activeDetail?.selections ?? {}) : customSelections;
+
+  // Active specs for display and quote enquiries
+  const activeSpecs = useMemo(() => {
+    if (mode === 'quick' && activeDetail) {
+      return activeDetail.specs;
+    }
+    return groups
+      .map((g) => {
+        const v = g.values.find((x) => x.id === customSelections[g.id]);
+        return v ? { groupLabel: g.label, valueLabel: v.label } : null;
+      })
+      .filter(Boolean) as { groupLabel: string; valueLabel: string }[];
+  }, [mode, activeDetail, groups, customSelections]);
 
   const unitPrice = useMemo(() => {
     if (mode === 'quick') return activeDetail?.price ?? product.basePrice;
@@ -306,7 +321,7 @@ export function Configurator({
         );
       })}
 
-      {/* Summary + add to cart */}
+      {/* Summary + add to cart / quote */}
       <div className="sticky bottom-0 z-10 rounded-2xl border border-gray-200/90 bg-white/95 p-4 shadow-xl backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/95 sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-2">
           <div>
@@ -341,11 +356,45 @@ export function Configurator({
           >
             {added ? <><Check className="h-4 w-4" /> Added to Cart</> : <><ShoppingCart className="h-4 w-4" /> {totalPrice > 0 ? 'Add to Cart' : 'Save Configuration'}</>}
           </button>
-          <button onClick={() => handleAdd(true)} className="btn-brand flex-1">
-            {totalPrice > 0 ? 'Buy Now →' : 'Request Official Quote →'}
-          </button>
+
+          {totalPrice > 0 ? (
+            <button onClick={() => handleAdd(true)} className="btn-brand flex-1">
+              Buy Now →
+            </button>
+          ) : (
+            <button
+              onClick={() => setEnquiryModalOpen(true)}
+              className="btn-brand flex-1"
+            >
+              <FileText className="h-4 w-4" /> Request Official Quote →
+            </button>
+          )}
         </div>
+
+        {totalPrice > 0 && (
+          <div className="mt-2 text-center">
+            <button
+              type="button"
+              onClick={() => setEnquiryModalOpen(true)}
+              className="inline-flex items-center gap-1 text-xs text-ink-muted hover:text-brand dark:text-gray-400 transition"
+            >
+              <FileText className="h-3.5 w-3.5" /> Need an enterprise quote or procurement invoice? Request Quote
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Quote / Configuration Enquiry Modal */}
+      <ProductEnquiryModal
+        isOpen={enquiryModalOpen}
+        onClose={() => setEnquiryModalOpen(false)}
+        product={product}
+        configuration={{
+          mode,
+          tierLabel: mode === 'quick' ? activeTier?.label : undefined,
+          specs: activeSpecs,
+        }}
+      />
     </div>
   );
 }

@@ -12,8 +12,17 @@ export const metadata: Metadata = {
 
 const PILLARS = ['SERVERS', 'WORKSTATIONS', 'STORAGE', 'NETWORKING', 'IT HARDWARE'] as const;
 
-export default async function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams?: { subject?: string; product?: string; slug?: string };
+}) {
   const contact = await getContactSettings();
+  const defaultSubject = searchParams?.subject
+    ? searchParams.subject
+    : searchParams?.product
+    ? `Quote Request: ${searchParams.product}`
+    : '';
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     'No. 8, 24th Main road, jp nagar 7th phase Bangalore 560078'
   )}`;
@@ -174,7 +183,11 @@ export default async function ContactPage() {
                 Submit your BOM, required specs, or system inquiries. Our certified engineers reply within 4 business hours.
               </p>
             </div>
-            <ContactForm />
+            <ContactForm
+              defaultSubject={defaultSubject}
+              productName={searchParams?.product}
+              productSlug={searchParams?.slug}
+            />
           </div>
         </div>
       </div>

@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartProvider';
 import { formatINR } from '@/lib/utils';
-import { ShieldCheck, CreditCard } from 'lucide-react';
+import { ShieldCheck, CreditCard, Loader2 } from 'lucide-react';
+
+const phoneRegex = /^[+]?[0-9\s\-().]{7,20}$/;
 
 type UserProfile = {
   name: string | null;
@@ -23,8 +25,8 @@ type UserProfile = {
 export function CheckoutForm({ user }: { user: UserProfile }) {
   const router = useRouter();
   const { items, subtotal, clear } = useCart();
-  const tax = subtotal * 0.18;
-  const total = subtotal + tax;
+  const tax = Math.round(subtotal * 0.18 * 100) / 100;
+  const total = Math.round((subtotal + tax) * 100) / 100;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,26 +45,94 @@ export function CheckoutForm({ user }: { user: UserProfile }) {
     notes: '',
   });
 
+  function validateClient(): string | null {
+    if (!form.name.trim() || form.name.trim().length < 2) {
+      return 'Please enter your full name.';
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!form.email.trim() || !emailRegex.test(form.email.trim())) {
+      return 'Please enter a valid billing email address.';
+    }
+    if (!form.phone.trim() || !phoneRegex.test(form.phone.trim())) {
+      return 'Please enter a valid phone number (7-20 digits).';
+    }
+    if (!form.addressLine1.trim() || form.addressLine1.trim().length < 3) {
+      return 'Please enter your address (at least 3 characters).';
+    }
+    if (!form.city.trim()) return 'Please enter your city.';
+    if (!form.state.trim()) return 'Please enter your state.';
+    if (!form.postalCode.trim() || form.postalCode.trim().length < 3) {
+      return 'Please enter a valid postal code.';
+    }
+    if (!form.country.trim()) return 'Please enter your country.';
+    return null;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
+
     if (items.length === 0) {
       setError('Your cart is empty.');
       return;
     }
+
+    const validationErr = validateClient();
+    if (validationErr) {
+      setError(validationErr);
+      return;
+    }
+
     setLoading(true);
     setError(null);
+
+    // Client idempotency key prevents duplicate orders from rapid multi-clicks or retries
+    const idempotencyKey = `ord_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items, billing: form }),
+        body: JSON.stringify({
+          items: items.map((i) => ({
+            productId: i.productId,
+            quantity: i.quantity,
+            tier: i.tier,
+            options: i.options.map((o) => ({
+              groupName: o.groupName,
+              groupLabel: o.groupLabel,
+              valueId: o.valueId,
+              valueLabel: o.valueLabel,
+              priceDelta: o.priceDelta,
+            })),
+          })),
+          billing: {
+            name: form.name.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            company: form.company.trim() || undefined,
+            gstNumber: form.gstNumber.trim() || undefined,
+            addressLine1: form.addressLine1.trim(),
+            addressLine2: form.addressLine2.trim() || undefined,
+            city: form.city.trim(),
+            state: form.state.trim(),
+            postalCode: form.postalCode.trim(),
+            country: form.country.trim(),
+            notes: form.notes.trim() || undefined,
+          },
+          idempotencyKey,
+        }),
       });
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? 'Checkout failed');
+      if (!res.ok) {
+        throw new Error(data.error ?? 'Checkout failed');
+      }
+
       clear();
       router.push(`/account/orders/${data.orderId}?success=1`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Something went wrong while placing your order.');
     } finally {
       setLoading(false);
     }
@@ -144,9 +214,16 @@ export function CheckoutForm({ user }: { user: UserProfile }) {
           <span className="font-display font-bold">Total</span>
           <span className="text-xl font-extrabold md:text-2xl">{formatINR(total)}</span>
         </div>
-        <button type="submit" disabled={loading} className="btn-brand w-full disabled:opacity-60">
-          <CreditCard className="h-4 w-4" />
-          {loading ? 'Placing order...' : 'Place Order'}
+        <button type="submit" disabled={loading} className="btn-brand w-full disabled:opacity-60 disabled:cursor-not-allowed">
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> Placing order...
+            </>
+          ) : (
+            <>
+              <CreditCard className="h-4 w-4" /> Place Order
+            </>
+          )}
         </button>
         <p className="mt-4 flex items-center justify-center gap-2 text-xs text-ink-muted dark:text-gray-400">
           <ShieldCheck className="h-3.5 w-3.5 text-brand" /> Payment coming soon — order marked pending

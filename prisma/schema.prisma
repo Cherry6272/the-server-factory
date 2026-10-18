@@ -273,6 +273,9 @@ model Order {
   notes       String?     @db.Text
   items       OrderItem[]
 
+  // Prevent duplicate submissions atomically
+  idempotencyKey String?  @unique
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -333,11 +336,6 @@ model LandingBlock {
   id        String    @id @default(cuid())
   type      BlockType
   title     String?
-  // Flexible JSON payload per block type
-  // HERO_CAROUSEL: { slides: [{ imageUrl, heading, subheading, ctaText, ctaLink }] }
-  // PROMO_BANNER: { text, link, bgColor }
-  // FEATURED_PRODUCTS: { productIds: [] }
-  // etc.
   data      Json
   sortOrder Int       @default(0)
   isVisible Boolean   @default(true)
@@ -370,4 +368,42 @@ model DiscountCode {
   isActive    Boolean      @default(true)
 
   createdAt DateTime @default(now())
+}
+
+// ─── Enquiries / Contact Messages ───────────
+enum EnquiryStatus {
+  NEW
+  CONTACTED
+  RESOLVED
+  SPAM
+}
+
+model Enquiry {
+  id              String         @id @default(cuid())
+  name            String
+  email           String
+  phone           String?
+  subject         String
+  message         String         @db.Text
+  status          EnquiryStatus  @default(NEW)
+
+  // Optional product reference if enquiry is for a specific product or configuration
+  productId       String?
+  productSlug     String?
+  productName     String?
+  configuration   Json?
+
+  // Delivery tracking
+  emailSent       Boolean        @default(false)
+  emailError      String?        @db.Text
+
+  // Idempotency / duplicate protection
+  idempotencyKey  String?        @unique
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
 }
