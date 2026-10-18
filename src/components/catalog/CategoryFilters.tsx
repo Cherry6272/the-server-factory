@@ -42,17 +42,24 @@ export function CategoryFilters({
   // Group search queries (for facet groups with > 6 options)
   const [searchQueries, setSearchQueries] = useState<Record<string, string>>({});
 
-  // Accordion collapsed state for individual filter groups
-  // Default: first 4 groups expanded, rest collapsed
-  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(() => {
-    const collapsed = new Set<string>();
-    // Collapse any config facet past index 3 by default
-    configFacets.slice(4).forEach((f) => collapsed.add(f.name));
-    return collapsed;
+  // Accordion open/expanded state for filter groups
+  // Default: only 'brand' is open by default. All config facets (Processor, RAID, Memory, etc.) and Price are collapsed until clicked.
+  // If a group has active selections from URL params, keep it open so the user sees their active choices.
+  const [openGroups, setOpenGroups] = useState<Set<string>>(() => {
+    const open = new Set<string>(['brand']);
+    for (const [key, val] of Object.entries(current)) {
+      if (key.startsWith('cfg_') && val) {
+        open.add(key.slice(4));
+      }
+    }
+    if (current.min || current.max) {
+      open.add('price');
+    }
+    return open;
   });
 
-  function toggleGroupCollapse(name: string) {
-    setCollapsedGroups((prev) => {
+  function toggleGroup(name: string) {
+    setOpenGroups((prev) => {
       const next = new Set(prev);
       if (next.has(name)) next.delete(name);
       else next.add(name);
@@ -238,30 +245,37 @@ export function CategoryFilters({
           </div>
         )}
 
-        <div className="space-y-5 divide-y divide-gray-100 dark:divide-gray-800">
-          {/* 1. Brand Section */}
+        <div className="space-y-4 divide-y divide-gray-100 dark:divide-gray-800">
+          {/* 1. Brand Section (Open by default) */}
           {brands.length > 0 && (
             <div className="pt-2 first:pt-0">
               <button
                 type="button"
-                onClick={() => toggleGroupCollapse('brand')}
-                className="flex w-full items-center justify-between text-left py-1 text-sm font-bold text-ink dark:text-gray-100"
+                onClick={() => toggleGroup('brand')}
+                className="group flex w-full items-center justify-between text-left py-1 text-sm font-bold text-ink dark:text-gray-100 hover:text-brand dark:hover:text-brand-400 transition-colors"
+                aria-expanded={openGroups.has('brand')}
               >
                 <span className="flex items-center gap-2">
                   Brand
-                  {selectedBrands.size > 0 && (
-                    <span className="h-2 w-2 rounded-full bg-brand" />
+                  {selectedBrands.size > 0 ? (
+                    <span className="rounded-full bg-brand px-1.5 py-0.2 text-[10px] font-bold text-white">
+                      {selectedBrands.size}
+                    </span>
+                  ) : (
+                    <span className="text-xs font-normal text-ink-muted dark:text-gray-500">
+                      ({brands.length})
+                    </span>
                   )}
                 </span>
                 <ChevronDown
                   className={cn(
-                    'h-4 w-4 text-gray-400 transition-transform duration-200',
-                    !collapsedGroups.has('brand') && 'rotate-180'
+                    'h-4 w-4 text-gray-400 group-hover:text-brand transition-transform duration-200',
+                    openGroups.has('brand') && 'rotate-180'
                   )}
                 />
               </button>
 
-              {!collapsedGroups.has('brand') && (
+              {openGroups.has('brand') && (
                 <div className="mt-2.5 space-y-1">
                   {brands.map((b) => (
                     <label
@@ -289,9 +303,9 @@ export function CategoryFilters({
             </div>
           )}
 
-          {/* 2. Dynamic Config Sections (Processor, Memory, Storage, RAID, Power Supply, etc.) */}
+          {/* 2. Dynamic Config Sections (Processor, Memory, Storage, RAID, Power Supply, etc. - Collapsed by default until clicked) */}
           {configFacets.map((facet) => {
-            const isCollapsed = collapsedGroups.has(facet.name);
+            const isOpen = openGroups.has(facet.name);
             const activeInGroup = selectedConfigs.get(facet.name)?.size ?? 0;
             const query = (searchQueries[facet.name] ?? '').toLowerCase();
             const filteredOptions = query
@@ -299,29 +313,34 @@ export function CategoryFilters({
               : facet.options;
 
             return (
-              <div key={facet.name} className="pt-4">
+              <div key={facet.name} className="pt-3">
                 <button
                   type="button"
-                  onClick={() => toggleGroupCollapse(facet.name)}
-                  className="flex w-full items-center justify-between text-left py-1 text-sm font-bold text-ink dark:text-gray-100"
+                  onClick={() => toggleGroup(facet.name)}
+                  className="group flex w-full items-center justify-between text-left py-1 text-sm font-bold text-ink dark:text-gray-100 hover:text-brand dark:hover:text-brand-400 transition-colors"
+                  aria-expanded={isOpen}
                 >
                   <span className="flex items-center gap-2">
                     {facet.name}
-                    {activeInGroup > 0 && (
+                    {activeInGroup > 0 ? (
                       <span className="rounded-full bg-techgreen-500 px-1.5 py-0.2 text-[10px] font-extrabold text-navy-950">
                         {activeInGroup}
+                      </span>
+                    ) : (
+                      <span className="text-xs font-normal text-ink-muted dark:text-gray-500">
+                        ({facet.options.length})
                       </span>
                     )}
                   </span>
                   <ChevronDown
                     className={cn(
-                      'h-4 w-4 text-gray-400 transition-transform duration-200',
-                      !isCollapsed && 'rotate-180'
+                      'h-4 w-4 text-gray-400 group-hover:text-brand transition-transform duration-200',
+                      isOpen && 'rotate-180'
                     )}
                   />
                 </button>
 
-                {!isCollapsed && (
+                {isOpen && (
                   <div className="mt-2.5">
                     {/* Quick filter input if group has > 6 options */}
                     {facet.options.length > 6 && (
@@ -381,12 +400,13 @@ export function CategoryFilters({
             );
           })}
 
-          {/* 3. Price Range Section */}
-          <div className="pt-4">
+          {/* 3. Price Range Section (Collapsed by default until clicked) */}
+          <div className="pt-3">
             <button
               type="button"
-              onClick={() => toggleGroupCollapse('price')}
-              className="flex w-full items-center justify-between text-left py-1 text-sm font-bold text-ink dark:text-gray-100"
+              onClick={() => toggleGroup('price')}
+              className="group flex w-full items-center justify-between text-left py-1 text-sm font-bold text-ink dark:text-gray-100 hover:text-brand dark:hover:text-brand-400 transition-colors"
+              aria-expanded={openGroups.has('price')}
             >
               <span className="flex items-center gap-2">
                 Price Range (₹)
@@ -396,13 +416,13 @@ export function CategoryFilters({
               </span>
               <ChevronDown
                 className={cn(
-                  'h-4 w-4 text-gray-400 transition-transform duration-200',
-                  !collapsedGroups.has('price') && 'rotate-180'
+                  'h-4 w-4 text-gray-400 group-hover:text-brand transition-transform duration-200',
+                  openGroups.has('price') && 'rotate-180'
                 )}
               />
             </button>
 
-            {!collapsedGroups.has('price') && (
+            {openGroups.has('price') && (
               <div className="mt-3">
                 <div className="flex items-center gap-2">
                   <input
