@@ -32,7 +32,7 @@ export default async function ContactPage() {
         <div className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-techgreen-500/30 bg-techgreen-50/70 px-4 py-1.5 text-xs font-bold tracking-wider text-techgreen-700 dark:border-techgreen-500/40 dark:bg-techgreen-950/40 dark:text-techgreen-300">
             <span className="h-2 w-2 rounded-full bg-techgreen-500 animate-pulse" />
-            BYTECHIP TECHNOLOGIES
+            SERVER FACTORY • BY BYTECHIP TECHNOLOGIES
           </div>
 
           <h1 className="heading-page mt-4 font-display font-extrabold tracking-tight">

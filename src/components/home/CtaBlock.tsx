@@ -30,8 +30,8 @@ export function CtaBlock({
         />
 
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-techgreen-500/40 bg-techgreen-500/10 px-3.5 py-1 text-xs font-bold tracking-wider text-techgreen-400">
-            <ShieldCheck className="h-4 w-4" /> BYTECHIP TECHNOLOGIES ENGINEERING CONSULTATION
+          <div className="inline-flex items-center gap-2 rounded-full border border-techgreen-500/40 bg-techgreen-500/10 px-3.5 py-1 text-xs font-bold tracking-wider text-techgreen-300">
+            <ShieldCheck className="h-4 w-4 text-techgreen-400" /> SERVER FACTORY ENGINEERING & HARDWARE CONSULTATION
           </div>
 
           <h2 className="heading-section mx-auto mt-4 max-w-3xl font-display font-extrabold tracking-tight text-white">
@@ -61,7 +61,7 @@ export function CtaBlock({
             </a>
 
             <a
-              href="https://wa.me/919916048404?text=Hi%20Bytechip%20Technologies%2C%20I%20am%20looking%20for%20enterprise%20server%20quotes"
+              href="https://wa.me/919916048404?text=Hi%20Server%20Factory%2C%20I%20am%20looking%20for%20enterprise%20server%20quotes"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-[#1EBE5D] sm:text-base"
@@ -71,7 +71,7 @@ export function CtaBlock({
           </div>
 
           <p className="mt-6 text-xs text-gray-400">
-            Office: No. 8, 24th Main Road, JP Nagar 7th Phase, Bangalore - 560078 • Same-Day Dispatch Across India
+            Facility: No. 8, 24th Main Road, JP Nagar 7th Phase, Bangalore - 560078 • A Bytechip Technologies Venture
           </p>
         </div>
       </div>

@@ -52,25 +52,25 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
         />
 
         <div className="relative z-10 mx-auto flex h-full max-w-4xl flex-col items-center justify-center px-4 text-center text-white xs:px-14 sm:px-16 2xl:max-w-5xl">
-          {/* Top Bytechip pill */}
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-techgreen-500/40 bg-navy-950/80 px-4 py-1.5 text-xs font-bold tracking-wider text-techgreen-400 backdrop-blur shadow-glow">
+          {/* Top Server Factory pill */}
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-techgreen-500/40 bg-navy-950/80 px-4 py-1.5 text-xs font-bold tracking-wider text-techgreen-300 backdrop-blur-md shadow-glow">
             <span className="h-2 w-2 rounded-full bg-techgreen-400 animate-pulse" />
-            BYTECHIP TECHNOLOGIES • ENTERPRISE INFRASTRUCTURE
+            SERVER FACTORY • ENTERPRISE INFRASTRUCTURE
           </div>
 
-          <h1 className="heading-hero animate-slide-up font-display font-extrabold tracking-tight">
+          <h1 className="heading-hero animate-slide-up font-display font-extrabold tracking-tight drop-shadow-md">
             {slide.heading.split(' ').map((w, idx, arr) => {
               const midpoint = Math.floor(arr.length / 2);
               return idx >= midpoint ? (
-                <span key={idx} className="text-techgreen-400"> {w}</span>
+                <span key={idx} className="bg-gradient-to-r from-sky-300 via-sky-100 to-techgreen-300 bg-clip-text text-transparent"> {w}</span>
               ) : (
-                <span key={idx}>{idx > 0 ? ' ' : ''}{w}</span>
+                <span key={idx} className="text-white">{idx > 0 ? ' ' : ''}{w}</span>
               );
             })}
           </h1>
 
           {slide.subheading && (
-            <p className="mt-4 max-w-2xl text-sm text-gray-200 sm:mt-6 sm:text-base md:text-lg leading-relaxed">
+            <p className="mt-4 max-w-2xl text-sm text-gray-200 sm:mt-6 sm:text-base md:text-lg leading-relaxed drop-shadow-sm">
               {slide.subheading}
             </p>
           )}
@@ -80,14 +80,14 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
             {slide.ctaText && slide.ctaLink && (
               <Link
                 href={slide.ctaLink}
-                className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white shadow-brand transition hover:bg-brand-600 hover:scale-105 sm:px-8 sm:py-3.5 sm:text-base"
+                className="inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 text-sm font-bold text-white shadow-brand transition hover:bg-brand-600 hover:scale-105 sm:px-8 sm:text-base"
               >
                 {slide.ctaText} <ArrowRight className="h-4 w-4" />
               </Link>
             )}
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20 sm:px-7 sm:py-3.5 sm:text-base"
+              className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/15 px-7 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:bg-white/25 sm:text-base shadow-sm"
             >
               Get Custom Quote
             </Link>

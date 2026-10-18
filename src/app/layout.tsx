@@ -13,13 +13,13 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Bytechip Technologies — Enterprise Servers, Workstations & Storage (The Server Factory)',
-    template: '%s | Bytechip Technologies — The Server Factory',
+    default: 'Server Factory — Enterprise Servers, Workstations & Components',
+    template: '%s | Server Factory',
   },
   description:
-    'Bytechip Technologies (The Server Factory): Buy Dell, HP, Lenovo & NVIDIA enterprise servers, GPU workstations, storage and components online. Fast delivery from Bangalore across India.',
+    'Server Factory (Bytechip Technologies): Buy Dell, HP, Lenovo & NVIDIA enterprise servers, GPU workstations, storage and components online. Fast delivery from Bangalore across India.',
   keywords: [
-    'Bytechip Technologies', 'The Server Factory', 'servers Bangalore', 'buy servers India',
+    'Server Factory', 'Bytechip Technologies', 'servers Bangalore', 'buy servers India',
     'dedicated servers', 'GPU servers', 'rack servers Bangalore', 'JP Nagar server store',
     'Dell PowerEdge', 'HP ProLiant', 'Lenovo ThinkSystem', 'workstations', 'refurbished servers',
     'server components', 'Xeon processors', 'enterprise storage', 'server India',
@@ -27,13 +27,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: siteUrl,
-    siteName: 'Bytechip Technologies — The Server Factory',
-    title: 'Bytechip Technologies — Enterprise Servers & Workstations',
+    siteName: 'Server Factory',
+    title: 'Server Factory — Enterprise Servers & Workstations',
     description: 'Configure and buy enterprise servers, GPU workstations and components online from Bangalore.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Bytechip Technologies — Enterprise Servers & Workstations',
+    title: 'Server Factory — Enterprise Servers & Workstations',
     description: 'Configure and buy enterprise servers, GPU workstations and components online from Bangalore.',
   },
   robots: { index: true, follow: true },

@@ -12,15 +12,13 @@ export function Footer({ contact }: { contact: ContactSettings }) {
           <div className="xs:col-span-2">
             <Link href="/" className="inline-block">
               <div className="flex items-center gap-2">
-                <span className="font-display text-xl font-extrabold tracking-tight sm:text-2xl text-navy-900 dark:text-white">
-                  BYTE<span className="text-techgreen-500">CHIP</span>
-                </span>
-                <span className="rounded bg-brand-50 px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-brand uppercase dark:bg-brand/20">
-                  SERVER FACTORY
+                <span className="font-display text-xl font-extrabold tracking-tight sm:text-2xl">
+                  <span className="text-brand">SERVER</span>
+                  <span className="text-navy-900 dark:text-white">FACTORY</span>
                 </span>
               </div>
-              <p className="mt-1 text-xs font-semibold tracking-widest text-techgreen-600 dark:text-techgreen-400 uppercase">
-                T E C H N O L O G I E S
+              <p className="mt-1 text-xs font-semibold tracking-wider text-techgreen-600 dark:text-techgreen-400 uppercase">
+                A BYTECHIP TECHNOLOGIES VENTURE
               </p>
             </Link>
 

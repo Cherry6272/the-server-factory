@@ -26,10 +26,10 @@ export default async function AboutPage() {
             BANGALORE ENTERPRISE INFRASTRUCTURE
           </div>
           <h1 className="heading-hero font-display font-extrabold text-navy-900 dark:text-white">
-            About <span className="text-brand">Bytechip Technologies</span>
+            About <span className="text-brand">Server Factory</span>
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base text-ink-muted dark:text-gray-300 sm:mt-6 sm:text-lg">
-            Operating as <strong className="text-navy-900 dark:text-white">The Server Factory</strong>, we provide India&apos;s most reliable,
+            A venture of <strong className="text-navy-900 dark:text-white">Bytechip Technologies</strong>, we provide India&apos;s most reliable,
             transparent enterprise hardware portal — custom rack servers, GPU AI workstations, storage arrays, and network infrastructure.
           </p>
         </div>
