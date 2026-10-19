@@ -1,19 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { prisma } from '@/lib/prisma';
-import { isComingSoon } from '@/lib/coming-soon';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // While gated, every other URL 307s back to "/". Listing them would spend
-  // crawl budget on redirects and risk soft-404 signals, so advertise only
-  // what actually resolves. Reverts automatically when the flag is off.
-  if (isComingSoon()) {
-    return [
-      { url: SITE_URL, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
-      { url: `${SITE_URL}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
-    ];
-  }
 
   const [products, categories] = await Promise.all([
     prisma.product.findMany({

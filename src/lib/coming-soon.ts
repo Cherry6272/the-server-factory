@@ -15,7 +15,7 @@
  * All of that reverts automatically when the flag is turned off.
  */
 export function isComingSoon(): boolean {
-  return process.env.COMING_SOON === 'true';
+  return false;
 }
 
 /** Path prefixes that still resolve while the gate is on. */

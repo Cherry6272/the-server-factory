@@ -1,7 +1,4 @@
-import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
-import { isComingSoon } from '@/lib/coming-soon';
-import { ComingSoon } from '@/components/home/ComingSoon';
 import { HeroCarousel } from '@/components/home/HeroCarousel';
 import { PromoBanner } from '@/components/home/PromoBanner';
 import { FeaturedProducts } from '@/components/home/FeaturedProducts';
@@ -11,29 +8,7 @@ import { CtaBlock } from '@/components/home/CtaBlock';
 
 export const revalidate = 60; // ISR - refresh homepage every minute
 
-/**
- * The root layout's metadata describes a working store. While gated, the
- * holding page gets its own copy — still indexable and brand-forward, so the
- * domain starts building a SERP presence before launch.
- */
-export function generateMetadata(): Metadata {
-  if (!isComingSoon()) return {};
-  return {
-    title: 'ServerFactory — Launching Soon',
-    description:
-      'ServerFactory is launching soon: enterprise servers, GPU workstations and data-centre components from Dell, HPE, HP and Lenovo, configurable online.',
-    alternates: { canonical: '/' },
-    robots: { index: true, follow: true },
-    openGraph: {
-      title: 'ServerFactory — Launching Soon',
-      description: 'Enterprise servers, workstations and components. Launching soon.',
-    },
-  };
-}
-
 export default async function HomePage() {
-  if (isComingSoon()) return <ComingSoon />;
-
   const blocks = await prisma.landingBlock
     .findMany({ where: { isVisible: true }, orderBy: { sortOrder: 'asc' } })
     .catch(() => []);

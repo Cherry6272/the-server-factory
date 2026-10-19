@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CheckCircle2, Server, Shield, Truck, Users, MapPin, Phone } from 'lucide-react';
-import { isComingSoon } from '@/lib/coming-soon';
 import { getContactSettings } from '@/lib/site-settings';
 import { PhotoBackdrop } from '@/components/layout/PhotoBackdrop';
 
@@ -13,7 +12,6 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const comingSoon = isComingSoon();
   const contact = await getContactSettings();
 
   return (
@@ -89,31 +87,21 @@ export default async function AboutPage() {
 
       <section className="mt-12 overflow-hidden rounded-2xl border border-brand-500/30 bg-gradient-to-br from-navy-950 via-navy-900 to-brand-900 px-5 py-10 text-center text-white shadow-brand sm:rounded-3xl sm:px-8 sm:py-12 md:mt-24 md:px-16 md:py-16">
         <h2 className="heading-section font-display font-extrabold">
-          {comingSoon ? 'Want to talk before we launch?' : 'Ready to build your server infrastructure?'}
+          Ready to build your server infrastructure?
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-sm text-gray-300 sm:text-base">
-          {comingSoon
-            ? 'The store opens shortly. In the meantime our engineers in JP Nagar Bangalore are happy to spec a machine for your workload.'
-            : 'Start configuring from 80+ enterprise models, or speak directly with our hardware team in Bangalore.'}
+          Start configuring from 80+ enterprise models, or speak directly with our hardware team in Bangalore.
         </p>
         <div className="mt-6 flex flex-col justify-center items-center gap-3 xs:flex-row xs:flex-wrap sm:mt-8">
-          {comingSoon ? (
-            <a href={`mailto:${contact.email}`} className="rounded-full bg-techgreen-500 px-6 py-3 text-sm font-bold text-navy-950 transition hover:bg-techgreen-400 sm:px-8 sm:text-base">
-              Email us
-            </a>
-          ) : (
-            <>
-              <Link href="/category/servers" className="rounded-full bg-techgreen-500 px-6 py-3 text-sm font-extrabold text-navy-950 transition hover:bg-techgreen-400 hover:scale-105 sm:px-8 sm:text-base">
-                Shop Servers
-              </Link>
-              <Link href="/contact" className="rounded-full border-2 border-white/40 bg-white/10 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/20 sm:px-8 sm:text-base">
-                Contact Bangalore Office
-              </Link>
-              <a href="tel:+919916048404" className="inline-flex items-center gap-2 rounded-full border border-techgreen-400/40 bg-navy-950/60 px-6 py-3 text-sm font-bold text-techgreen-300 transition hover:bg-navy-950 sm:text-base">
-                <Phone className="h-4 w-4" /> +91 99160 48404
-              </a>
-            </>
-          )}
+          <Link href="/category/servers" className="rounded-full bg-techgreen-500 px-6 py-3 text-sm font-extrabold text-navy-950 transition hover:bg-techgreen-400 hover:scale-105 sm:px-8 sm:text-base">
+            Shop Servers
+          </Link>
+          <Link href="/contact" className="rounded-full border-2 border-white/40 bg-white/10 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/20 sm:px-8 sm:text-base">
+            Contact Bangalore Office
+          </Link>
+          <a href="tel:+919916048404" className="inline-flex items-center gap-2 rounded-full border border-techgreen-400/40 bg-navy-950/60 px-6 py-3 text-sm font-bold text-techgreen-300 transition hover:bg-navy-950 sm:text-base">
+            <Phone className="h-4 w-4" /> +91 99160 48404
+          </a>
         </div>
       </section>
     </div>
