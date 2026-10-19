@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+import { logoutUser } from '@/lib/logout';
 import {
   ChevronDown, Search, User, Menu, X, Server,
   LogOut, LayoutDashboard, Package, UserCircle,
@@ -229,7 +229,7 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
                     </div>
                     <div className="border-t border-gray-100 p-1.5 dark:border-gray-800">
                       <button
-                        onClick={() => signOut({ callbackUrl: '/' })}
+                        onClick={() => logoutUser('/')}
                         className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
                       >
                         <LogOut className="h-4 w-4" /> Sign out
@@ -331,7 +331,7 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
                   <Link href="/account/orders" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800">
                     <Package className="h-4 w-4" /> Orders
                   </Link>
-                  <button onClick={() => { setMobileOpen(false); signOut({ callbackUrl: '/' }); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600">
+                  <button onClick={() => { setMobileOpen(false); logoutUser('/'); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600">
                     <LogOut className="h-4 w-4" /> Sign out
                   </button>
                 </div>

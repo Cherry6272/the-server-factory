@@ -31,7 +31,26 @@ export default async function AccountPage() {
           </h1>
           <p className="mt-2 text-sm text-ink-muted dark:text-gray-400 md:text-base">{user?.email}</p>
         </div>
-        <form action={async () => { 'use server'; await signOut({ redirectTo: '/' }); }}>
+        <form action={async () => {
+          'use server';
+          const { cookies } = await import('next/headers');
+          const cookieStore = cookies();
+          const names = [
+            'authjs.session-token',
+            '__Secure-authjs.session-token',
+            'authjs.csrf-token',
+            '__Host-authjs.csrf-token',
+            'authjs.callback-url',
+            'next-auth.session-token',
+            '__Secure-next-auth.session-token',
+            'next-auth.csrf-token',
+            'next-auth.callback-url',
+          ];
+          for (const n of names) {
+            try { cookieStore.delete(n); } catch {}
+          }
+          await signOut({ redirectTo: '/' });
+        }}>
           <button type="submit" className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-red-800 dark:hover:bg-red-950/30">
             <LogOut className="h-4 w-4" /> Sign out
           </button>
