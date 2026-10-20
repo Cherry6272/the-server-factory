@@ -1,10 +1,23 @@
 import { NextResponse } from 'next/server';
 
-const AUTH_COOKIE_BASES = [
+const TARGET_AUTH_COOKIES = [
+  // Auth.js v5 session tokens & chunks
   'authjs.session-token',
+  'authjs.session-token.0',
+  'authjs.session-token.1',
   '__Secure-authjs.session-token',
+  '__Secure-authjs.session-token.0',
+  '__Secure-authjs.session-token.1',
+
+  // NextAuth v4 session tokens & chunks
   'next-auth.session-token',
+  'next-auth.session-token.0',
+  'next-auth.session-token.1',
   '__Secure-next-auth.session-token',
+  '__Secure-next-auth.session-token.0',
+  '__Secure-next-auth.session-token.1',
+
+  // CSRF tokens & Callback URLs
   'authjs.csrf-token',
   '__Host-authjs.csrf-token',
   'next-auth.csrf-token',
@@ -13,26 +26,12 @@ const AUTH_COOKIE_BASES = [
   '__Secure-authjs.callback-url',
   'next-auth.callback-url',
   '__Secure-next-auth.callback-url',
-  'authjs.pkce.code_verifier',
-  '__Secure-authjs.pkce.code_verifier',
-  'authjs.state',
-  '__Secure-authjs.state',
-  'authjs.nonce',
-  '__Secure-authjs.nonce',
 ];
 
-function collectCookieNames(req: Request): Set<string> {
-  const names = new Set<string>();
+function collectCookiesToDelete(req: Request): Set<string> {
+  const names = new Set<string>(TARGET_AUTH_COOKIES);
 
-  // 1. Add all standard Auth.js / NextAuth names and chunks (.0 - .9)
-  for (const base of AUTH_COOKIE_BASES) {
-    names.add(base);
-    for (let i = 0; i <= 9; i++) {
-      names.add(`${base}.${i}`);
-    }
-  }
-
-  // 2. Add any cookies present in the incoming request header
+  // Also include any cookie currently present in the client request header
   const rawCookieHeader = req.headers.get('cookie');
   if (rawCookieHeader) {
     const parts = rawCookieHeader.split(';');
@@ -44,7 +43,6 @@ function collectCookieNames(req: Request): Set<string> {
           cName.includes('auth') ||
           cName.includes('session') ||
           cName.includes('csrf') ||
-          cName.includes('callback') ||
           cName.startsWith('__Secure-') ||
           cName.startsWith('__Host-')
         ) {
@@ -59,7 +57,7 @@ function collectCookieNames(req: Request): Set<string> {
 
 function applyCookieDeletions(res: NextResponse, req: Request) {
   const isHttps = req.url.startsWith('https:') || req.headers.get('x-forwarded-proto') === 'https';
-  const cookieNames = collectCookieNames(req);
+  const cookieNames = collectCookiesToDelete(req);
 
   for (const name of cookieNames) {
     const requiresSecure = name.startsWith('__Secure-') || name.startsWith('__Host-');
@@ -75,7 +73,7 @@ function applyCookieDeletions(res: NextResponse, req: Request) {
     });
   }
 
-  // Modern browser directive: immediately invalidate all cookies for this origin
+  // Instruct modern browsers (Chrome, Edge, Firefox, Safari 17+) to clear all cookies for this origin
   res.headers.set('Clear-Site-Data', '"cookies"');
   res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
   res.headers.set('Pragma', 'no-cache');
