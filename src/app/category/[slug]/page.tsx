@@ -1,7 +1,10 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Folder } from 'lucide-react';
+import {
+  Folder, Server, Cpu, HardDrive, ShieldCheck,
+  PhoneCall, ArrowRight, Clock, CheckCircle2,
+} from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CategoryFilters } from '@/components/catalog/CategoryFilters';
@@ -18,8 +21,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = await prisma.category.findUnique({ where: { slug: params.slug } }).catch(() => null);
   if (!cat) return { title: 'Category not found' };
   return {
-    title: `${cat.name} | Buy Online in India`,
-    description: cat.description ?? `Shop ${cat.name} from top brands at Server Factory.`,
+    title: `${cat.name} | Buy & Rent Online in India`,
+    description: cat.description ?? `Shop and rent ${cat.name} from top brands at Server Factory.`,
     alternates: { canonical: `/category/${cat.slug}` },
   };
 }
@@ -29,6 +32,7 @@ export async function generateStaticParams() {
   return cats.map((c) => ({ slug: c.slug }));
 }
 
+export const dynamicParams = true;
 export const revalidate = 60;
 
 export default async function CategoryPage({ params, searchParams }: Props) {
@@ -299,20 +303,107 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           </div>
 
           {products.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-gray-300 p-16 text-center dark:border-gray-700 bg-gray-50/50 dark:bg-navy-900/40">
-              <p className="font-semibold text-ink dark:text-gray-200">No products match your filters</p>
-              <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">
-                Try selecting different config options or clearing some filters.
-              </p>
-              <div className="mt-4">
-                <Link
-                  href={`/category/${node.slug}`}
-                  className="btn-outline text-xs font-semibold"
-                >
-                  Clear All Filters
-                </Link>
+            node.slug === 'rentals' ? (
+              <div className="rounded-3xl border border-gray-200/90 bg-white p-6 shadow-soft dark:border-gray-800 dark:bg-navy-900/80 md:p-10">
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-techgreen-500/40 bg-techgreen-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-techgreen-700 dark:border-techgreen-500/30 dark:bg-techgreen-950/60 dark:text-techgreen-300">
+                    <span className="h-2 w-2 rounded-full bg-techgreen-500 animate-pulse" />
+                    Enterprise Server Leasing & GPU Clusters
+                  </span>
+                  <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand dark:bg-brand/20">
+                    Bangalore Local Dispatch & Pan-India
+                  </span>
+                </div>
+
+                <h2 className="font-display text-2xl font-extrabold text-navy-900 dark:text-white sm:text-3xl">
+                  Enterprise Infrastructure on Your Terms
+                </h2>
+                <p className="mt-3 max-w-3xl text-sm leading-relaxed text-ink-muted dark:text-gray-300 sm:text-base">
+                  Bytechip Technologies (Server Factory) offers turnkey server rentals for enterprise compute, AI/ML model training,
+                  virtualization, rendering, testing, and temporary datacenter staging. Choose from flexible daily, weekly, monthly,
+                  or annual lease agreements with zero long-term capital lockup.
+                </p>
+
+                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-navy-950/60">
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-brand text-white shadow-sm">
+                      <Server className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-display font-bold text-ink dark:text-white">Rack & Blade Servers</h3>
+                    <p className="mt-2 text-xs leading-relaxed text-ink-muted dark:text-gray-400">
+                      Dell PowerEdge & HPE ProLiant (1U, 2U, 4U). Dual Intel Xeon / AMD EPYC, up to 1TB+ ECC RAM, and redundant hot-plug power supplies.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-navy-950/60">
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-navy-900 text-white shadow-sm">
+                      <Cpu className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-display font-bold text-ink dark:text-white">AI & GPU Workstations</h3>
+                    <p className="mt-2 text-xs leading-relaxed text-ink-muted dark:text-gray-400">
+                      High-performance multi-GPU rental nodes featuring NVIDIA RTX 4090, A6000, and A100 for deep learning, CAD, and 3D simulation.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-gray-100 bg-gray-50/70 p-5 dark:border-gray-800 dark:bg-navy-950/60">
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-techgreen-600 text-white shadow-sm">
+                      <HardDrive className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-display font-bold text-ink dark:text-white">Storage & Networking</h3>
+                    <p className="mt-2 text-xs leading-relaxed text-ink-muted dark:text-gray-400">
+                      Enterprise SAS/SATA/NVMe storage arrays and 10GbE / 25GbE optical networking cards for high-throughput clustered workloads.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-8 rounded-2xl border border-techgreen-500/20 bg-techgreen-50/40 p-5 dark:bg-techgreen-950/20">
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <div className="flex items-center gap-2.5 text-xs font-semibold text-ink dark:text-gray-200">
+                      <CheckCircle2 className="h-4 w-4 text-techgreen-600 dark:text-techgreen-400 flex-shrink-0" />
+                      <span>Custom configurations tested before dispatch</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-xs font-semibold text-ink dark:text-gray-200">
+                      <Clock className="h-4 w-4 text-techgreen-600 dark:text-techgreen-400 flex-shrink-0" />
+                      <span>Daily, Monthly, & Annual contract terms</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-xs font-semibold text-ink dark:text-gray-200">
+                      <ShieldCheck className="h-4 w-4 text-techgreen-600 dark:text-techgreen-400 flex-shrink-0" />
+                      <span>24/7 SLA hardware support & instant replacement</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                  <Link
+                    href="/contact?inquiry=rentals"
+                    className="btn-brand inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold shadow-brand"
+                  >
+                    Request Rental Quote / Pre-book <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <a
+                    href="tel:9916048404"
+                    className="btn-outline inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold"
+                  >
+                    <PhoneCall className="h-4 w-4 text-brand" /> Call Direct: 9916048404
+                  </a>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="rounded-2xl border border-dashed border-gray-300 p-16 text-center dark:border-gray-700 bg-gray-50/50 dark:bg-navy-900/40">
+                <p className="font-semibold text-ink dark:text-gray-200">No products match your filters</p>
+                <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">
+                  Try selecting different config options or clearing some filters.
+                </p>
+                <div className="mt-4">
+                  <Link
+                    href={`/category/${node.slug}`}
+                    className="btn-outline text-xs font-semibold"
+                  >
+                    Clear All Filters
+                  </Link>
+                </div>
+              </div>
+            )
           ) : (
             <div className="grid gap-4 xs:grid-cols-2 lg:grid-cols-2 md:gap-6 xl:grid-cols-3 3xl:grid-cols-4">
               {products.map((p) => (

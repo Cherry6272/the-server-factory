@@ -11,6 +11,15 @@ const nextConfig = {
     { protocol: 'https', hostname: '**.cloudinary.com' },
   ],
 },
+  async redirects() {
+    return [
+      {
+        source: '/rentals',
+        destination: '/category/rentals',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
