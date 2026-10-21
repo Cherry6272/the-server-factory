@@ -20,20 +20,20 @@ export function getBusinessEmail(): string {
   return (
     process.env.ADMIN_NOTIFICATION_EMAIL ||
     process.env.ADMIN_EMAIL ||
-    'admin@theserverfactory.com'
+    'sales@theserverfactory.com'
   );
 }
 
 // Get sender address
 export function getFromEmail(): string {
-  return process.env.EMAIL_FROM || 'ServerFactory <orders@theserverfactory.com>';
+  return process.env.EMAIL_FROM || 'ServerFactory <sales@theserverfactory.com>';
 }
 
 // Create Nodemailer transport
 function createTransport() {
   if (!isEmailConfigured()) return null;
 
-  const port = parseInt(process.env.SMTP_PORT || '587', 10);
+  const port = parseInt(process.env.SMTP_PORT || '465', 10);
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
 
   return nodemailer.createTransport({
@@ -396,7 +396,7 @@ export async function sendOrderCustomerConfirmation(
 
       <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center;">
         ServerFactory • Bytechip Technologies • No. 8, 24th Main Road, JP Nagar 7th Phase, Bangalore - 560078<br />
-        Support: +91 99160 48404 • admin@theserverfactory.com
+        Support: +91 99160 48404 • sales@theserverfactory.com
       </div>
     </div>
   `;
