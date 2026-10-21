@@ -225,18 +225,22 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   return (
     <div className="container-page py-6 md:py-10">
       {/* Top Utility Bar: Route Map Link (Breadcrumb) + In-Category Search Bar */}
-      <div className="mb-6 flex flex-col gap-3.5 sm:flex-row sm:items-center sm:justify-between md:mb-8">
-        <CategoryBreadcrumb
-          crumbs={[
-            { label: 'Home', href: '/', children: tree },
-            ...breadcrumb.map((crumb, idx) => ({
-              label: crumb.name,
-              href: idx === breadcrumb.length - 1 ? null : `/category/${crumb.slug}`,
-              children: crumb.children,
-            })),
-          ]}
-        />
-        <CategorySearchBar categoryName={node.name} currentSlug={node.slug} />
+      <div className="mb-6 flex flex-col gap-3.5 lg:flex-row lg:items-center lg:justify-between md:mb-8">
+        <div className="flex-shrink-0">
+          <CategoryBreadcrumb
+            crumbs={[
+              { label: 'Home', href: '/', children: tree },
+              ...breadcrumb.map((crumb, idx) => ({
+                label: crumb.name,
+                href: idx === breadcrumb.length - 1 ? null : `/category/${crumb.slug}`,
+                children: crumb.children,
+              })),
+            ]}
+          />
+        </div>
+        <div className="w-full lg:w-auto lg:flex-1 lg:max-w-xl xl:max-w-2xl 2xl:max-w-3xl lg:ml-6">
+          <CategorySearchBar categoryName={node.name} currentSlug={node.slug} />
+        </div>
       </div>
 
       {/* Header */}
