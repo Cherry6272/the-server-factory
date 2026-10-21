@@ -3,13 +3,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   Folder, Server, Cpu, HardDrive, ShieldCheck,
-  PhoneCall, ArrowRight, Clock, CheckCircle2,
+  PhoneCall, ArrowRight, Clock, CheckCircle2, X,
 } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 import { ProductCard } from '@/components/product/ProductCard';
 import { CategoryFilters } from '@/components/catalog/CategoryFilters';
 import { SortDropdown } from '@/components/catalog/SortDropdown';
 import { CategoryBreadcrumb } from '@/components/layout/CategoryBreadcrumb';
+import { CategorySearchBar } from '@/components/catalog/CategorySearchBar';
 import { getCategoryTree, findBySlug, getBreadcrumb, collectDescendantIds } from '@/lib/categories';
 
 type Props = {
@@ -44,18 +45,33 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const breadcrumb = getBreadcrumb(tree, params.slug);
   const descendantIds = collectDescendantIds(node);
 
-  // 1. Parse Brand filter
+  // 1. Parse In-Category Search query
+  const rawQ = Array.isArray(searchParams.q) ? searchParams.q[0] : searchParams.q;
+  const searchQuery = rawQ?.trim();
+  const searchFilter = searchQuery
+    ? {
+        OR: [
+          { name: { contains: searchQuery, mode: 'insensitive' as const } },
+          { sku: { contains: searchQuery, mode: 'insensitive' as const } },
+          { brand: { contains: searchQuery, mode: 'insensitive' as const } },
+          { shortDesc: { contains: searchQuery, mode: 'insensitive' as const } },
+          { description: { contains: searchQuery, mode: 'insensitive' as const } },
+        ],
+      }
+    : {};
+
+  // 2. Parse Brand filter
   const rawBrand = searchParams.brand;
   const brandList = Array.isArray(rawBrand)
     ? rawBrand.join(',').split(',').map((s) => s.trim()).filter(Boolean)
     : (rawBrand ?? '').split(',').map((s) => s.trim()).filter(Boolean);
   const brandFilter = brandList.length > 0 ? { brand: { in: brandList } } : {};
 
-  // 2. Parse Price filter
+  // 3. Parse Price filter
   const minPrice = searchParams.min ? Number(searchParams.min) : undefined;
   const maxPrice = searchParams.max ? Number(searchParams.max) : undefined;
 
-  // 3. Parse Dynamic Config filters (any searchParam key starting with "cfg_")
+  // 4. Parse Dynamic Config filters (any searchParam key starting with "cfg_")
   const configFilters: Record<string, string[]> = {};
   for (const [key, val] of Object.entries(searchParams)) {
     if (key.startsWith('cfg_') && val) {
@@ -68,7 +84,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     }
   }
 
-  // 4. Construct Prisma WHERE clauses for dynamic config options
+  // 5. Construct Prisma WHERE clauses for dynamic config options
   const configWhereClauses = Object.entries(configFilters).map(([groupName, values]) => ({
     optionGroups: {
       some: {
@@ -98,6 +114,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     categoryId: { in: descendantIds },
     isActive: true,
     ...brandFilter,
+    ...searchFilter,
     ...(minPrice !== undefined || maxPrice !== undefined
       ? {
           basePrice: {
@@ -207,17 +224,20 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   return (
     <div className="container-page py-6 md:py-10">
-      {/* Breadcrumb */}
-      <CategoryBreadcrumb
-        crumbs={[
-          { label: 'Home', href: '/', children: tree },
-          ...breadcrumb.map((crumb, idx) => ({
-            label: crumb.name,
-            href: idx === breadcrumb.length - 1 ? null : `/category/${crumb.slug}`,
-            children: crumb.children,
-          })),
-        ]}
-      />
+      {/* Top Utility Bar: Route Map Link (Breadcrumb) + In-Category Search Bar */}
+      <div className="mb-6 flex flex-col gap-3.5 sm:flex-row sm:items-center sm:justify-between md:mb-8">
+        <CategoryBreadcrumb
+          crumbs={[
+            { label: 'Home', href: '/', children: tree },
+            ...breadcrumb.map((crumb, idx) => ({
+              label: crumb.name,
+              href: idx === breadcrumb.length - 1 ? null : `/category/${crumb.slug}`,
+              children: crumb.children,
+            })),
+          ]}
+        />
+        <CategorySearchBar categoryName={node.name} currentSlug={node.slug} />
+      </div>
 
       {/* Header */}
       <div className="mb-6 flex flex-col items-start justify-between gap-4 md:mb-8 md:flex-row md:items-center md:gap-6">
@@ -289,6 +309,26 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         />
 
         <div>
+          {/* Active Search Filter Banner */}
+          {searchQuery && (
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-brand/20 bg-brand-50/60 px-4 py-2.5 text-xs sm:text-sm text-ink dark:border-brand/30 dark:bg-brand/10 dark:text-gray-200">
+              <div className="flex items-center gap-2">
+                <span className="text-ink-muted dark:text-gray-400">Search results for:</span>
+                <span className="font-bold text-brand dark:text-brand-300">&ldquo;{searchQuery}&rdquo;</span>
+                <span className="rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-ink-muted shadow-2xs dark:bg-navy-900 dark:text-gray-400">
+                  {products.length} found
+                </span>
+              </div>
+              <Link
+                href={`/category/${node.slug}`}
+                className="inline-flex items-center gap-1 rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-gray-700 shadow-2xs transition-colors hover:bg-gray-50 hover:text-red-600 dark:bg-navy-900 dark:text-gray-300 dark:hover:text-red-400"
+                title="Clear search"
+              >
+                <X className="h-3.5 w-3.5" /> Clear search
+              </Link>
+            </div>
+          )}
+
           <div className="mb-4 flex items-center justify-between md:mb-6">
             <div>
               <p className="text-xs text-ink-muted dark:text-gray-400 md:text-sm">
@@ -386,6 +426,23 @@ export default async function CategoryPage({ params, searchParams }: Props) {
                   >
                     <PhoneCall className="h-4 w-4 text-brand" /> Call Direct: 9916048404
                   </a>
+                </div>
+              </div>
+            ) : searchQuery ? (
+              <div className="rounded-2xl border border-dashed border-gray-300 p-12 text-center dark:border-gray-700 bg-gray-50/50 dark:bg-navy-900/40">
+                <p className="font-semibold text-ink dark:text-gray-200">
+                  No hardware found matching &ldquo;{searchQuery}&rdquo; in {node.name}
+                </p>
+                <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">
+                  Try checking the spelling, using different keywords, or clear your search query.
+                </p>
+                <div className="mt-4 flex items-center justify-center gap-3">
+                  <Link
+                    href={`/category/${node.slug}`}
+                    className="btn-brand text-xs font-semibold"
+                  >
+                    Clear Search
+                  </Link>
                 </div>
               </div>
             ) : (
