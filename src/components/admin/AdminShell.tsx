@@ -42,6 +42,15 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
     return () => window.removeEventListener('pageshow', handlePageShow);
   }, []);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setMobileOpen(false);
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [mobileOpen]);
+
   const isActive = (href: string, exact = false) =>
     exact ? pathname === href : pathname === href || pathname.startsWith(href + '/');
 
@@ -113,9 +122,15 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
       </div>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden" role="dialog" aria-modal="true">
-          <div className="drawer-backdrop" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 h-full w-[85vw] max-w-xs overflow-y-auto bg-white shadow-2xl dark:bg-gray-900">
+        <div className="fixed inset-0 z-[100] lg:hidden" role="dialog" aria-modal="true">
+          {/* Backdrop placed behind the drawer panel */}
+          <div
+            className="fixed inset-0 bg-black/60 transition-opacity"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+          {/* Drawer panel with z-10 on top of backdrop */}
+          <div className="relative z-10 flex h-full w-[85vw] max-w-xs flex-col overflow-y-auto bg-white shadow-2xl dark:bg-gray-900 animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800">
               <Link href="/admin" className="font-display text-lg font-extrabold">
                 <span className="text-brand">SF</span> <span className="text-ink dark:text-white">Admin</span>
@@ -133,7 +148,7 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition',
                     isActive(n.href, n.exact)
-                      ? 'bg-brand text-white'
+                      ? 'bg-brand text-white shadow-sm'
                       : 'text-ink hover:bg-brand-50 dark:text-gray-100 dark:hover:bg-gray-800'
                   )}
                 >
@@ -142,7 +157,7 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
                 </Link>
               ))}
             </nav>
-            <div className="space-y-1 border-t border-gray-100 p-4 dark:border-gray-800">
+            <div className="mt-auto space-y-1 border-t border-gray-100 p-4 dark:border-gray-800">
               <Link href="/" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink-muted dark:text-gray-400" target="_blank">
                 <ExternalLink className="h-4 w-4" /> View site
               </Link>
