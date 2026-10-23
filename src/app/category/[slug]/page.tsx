@@ -33,12 +33,16 @@ export async function generateStaticParams() {
   return cats.map((c) => ({ slug: c.slug }));
 }
 
+export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function CategoryPage({ params, searchParams }: Props) {
+  // Ensure searchParams is an object
+  const safeParams = searchParams ?? {};
+
   // Load the full tree once, then locate our node within it
-  const tree = await getCategoryTree();
+  const tree = await getCategoryTree().catch(() => []);
   const node = findBySlug(tree, params.slug);
   if (!node) notFound();
 
@@ -46,40 +50,39 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const descendantIds = collectDescendantIds(node);
 
   // 1. Parse In-Category Search query
-  const rawQ = Array.isArray(searchParams.q) ? searchParams.q[0] : searchParams.q;
-  const searchQuery = rawQ?.trim();
-  const searchFilter = searchQuery
-    ? {
-        OR: [
-          { name: { contains: searchQuery, mode: 'insensitive' as const } },
-          { sku: { contains: searchQuery, mode: 'insensitive' as const } },
-          { brand: { contains: searchQuery, mode: 'insensitive' as const } },
-          { shortDesc: { contains: searchQuery, mode: 'insensitive' as const } },
-          { description: { contains: searchQuery, mode: 'insensitive' as const } },
-        ],
-      }
-    : {};
+  const rawQ = Array.isArray(safeParams.q) ? safeParams.q[0] : safeParams.q;
+  const searchQuery = typeof rawQ === 'string' ? rawQ.trim() : undefined;
 
-  // 2. Parse Brand filter
-  const rawBrand = searchParams.brand;
+  // 2. Parse Brand filter safely
+  const rawBrand = safeParams.brand;
   const brandList = Array.isArray(rawBrand)
-    ? rawBrand.join(',').split(',').map((s) => s.trim()).filter(Boolean)
-    : (rawBrand ?? '').split(',').map((s) => s.trim()).filter(Boolean);
-  const brandFilter = brandList.length > 0 ? { brand: { in: brandList } } : {};
+    ? rawBrand.flatMap((s) => s.split(',')).map((s) => s.trim()).filter(Boolean)
+    : typeof rawBrand === 'string'
+      ? rawBrand.split(',').map((s) => s.trim()).filter(Boolean)
+      : [];
 
-  // 3. Parse Price filter
-  const minPrice = searchParams.min ? Number(searchParams.min) : undefined;
-  const maxPrice = searchParams.max ? Number(searchParams.max) : undefined;
+  // 3. Parse Price filter safely (prevent NaN from corrupting Prisma Decimal queries)
+  const rawMin = Array.isArray(safeParams.min) ? safeParams.min[0] : safeParams.min;
+  const rawMax = Array.isArray(safeParams.max) ? safeParams.max[0] : safeParams.max;
+  const numMin = rawMin !== undefined && String(rawMin).trim() !== '' ? Number(rawMin) : undefined;
+  const numMax = rawMax !== undefined && String(rawMax).trim() !== '' ? Number(rawMax) : undefined;
+  const minPrice = typeof numMin === 'number' && !Number.isNaN(numMin) && numMin >= 0 ? numMin : undefined;
+  const maxPrice = typeof numMax === 'number' && !Number.isNaN(numMax) && numMax >= 0 ? numMax : undefined;
 
   // 4. Parse Dynamic Config filters (any searchParam key starting with "cfg_")
   const configFilters: Record<string, string[]> = {};
-  for (const [key, val] of Object.entries(searchParams)) {
+  for (const [key, val] of Object.entries(safeParams)) {
     if (key.startsWith('cfg_') && val) {
-      const groupName = key.slice(4);
-      const str = Array.isArray(val) ? val.join(',') : val;
-      const vals = str.split(',').map((s) => s.trim()).filter(Boolean);
-      if (vals.length > 0) {
-        configFilters[groupName] = vals;
+      try {
+        const groupName = decodeURIComponent(key.slice(4)).trim();
+        if (!groupName) continue;
+        const str = Array.isArray(val) ? val.join(',') : String(val);
+        const vals = str.split(',').map((s) => s.trim()).filter(Boolean);
+        if (vals.length > 0) {
+          configFilters[groupName] = vals;
+        }
+      } catch {
+        // Ignore malformed query string keys
       }
     }
   }
@@ -107,26 +110,46 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     'price-desc': { basePrice: 'desc' },
     name: { name: 'asc' },
   };
-  const sortParam = Array.isArray(searchParams.sort) ? searchParams.sort[0] : searchParams.sort;
+  const sortParam = Array.isArray(safeParams.sort) ? safeParams.sort[0] : safeParams.sort;
   const orderBy = sortMap[sortParam ?? 'newest'] ?? sortMap.newest;
 
-  const whereClause: any = {
-    categoryId: { in: descendantIds },
-    isActive: true,
-    ...brandFilter,
-    ...searchFilter,
-    ...(minPrice !== undefined || maxPrice !== undefined
-      ? {
-          basePrice: {
-            ...(minPrice !== undefined ? { gte: minPrice } : {}),
-            ...(maxPrice !== undefined ? { lte: maxPrice } : {}),
-          },
-        }
-      : {}),
-    ...(configWhereClauses.length > 0 ? { AND: configWhereClauses } : {}),
-  };
+  // 6. Assemble robust unified AND conditions to prevent Prisma OR/AND conflict errors
+  const andConditions: any[] = [
+    { categoryId: { in: descendantIds } },
+    { isActive: true },
+  ];
 
-  // 5. Parallel fetch: filtered products + all products in this category for facet counting
+  if (brandList.length > 0) {
+    andConditions.push({ brand: { in: brandList } });
+  }
+
+  if (searchQuery) {
+    andConditions.push({
+      OR: [
+        { name: { contains: searchQuery, mode: 'insensitive' as const } },
+        { sku: { contains: searchQuery, mode: 'insensitive' as const } },
+        { brand: { contains: searchQuery, mode: 'insensitive' as const } },
+        { shortDesc: { contains: searchQuery, mode: 'insensitive' as const } },
+        { description: { contains: searchQuery, mode: 'insensitive' as const } },
+      ],
+    });
+  }
+
+  if (minPrice !== undefined) {
+    andConditions.push({ basePrice: { gte: minPrice } });
+  }
+
+  if (maxPrice !== undefined) {
+    andConditions.push({ basePrice: { lte: maxPrice } });
+  }
+
+  if (configWhereClauses.length > 0) {
+    andConditions.push(...configWhereClauses);
+  }
+
+  const whereClause = { AND: andConditions };
+
+  // 7. Parallel fetch: filtered products + all products in this category for facet counting
   const [products, allCategoryProducts] = await Promise.all([
     prisma.product
       .findMany({
@@ -134,7 +157,10 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         include: { images: { take: 1, orderBy: { sortOrder: 'asc' } }, category: true },
         orderBy,
       })
-      .catch(() => []),
+      .catch((err) => {
+        console.error('[CategoryPage] Filter query failed:', err);
+        return [];
+      }),
     prisma.product
       .findMany({
         where: { categoryId: { in: descendantIds }, isActive: true },
@@ -159,15 +185,18 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           },
         },
       })
-      .catch(() => []),
+      .catch((err) => {
+        console.error('[CategoryPage] Facet query failed:', err);
+        return [];
+      }),
   ]);
 
-  // 6. Compute available brand facets with counts & category price range
+  // 8. Compute available brand facets with counts & category price range
   const brandCountMap = new Map<string, number>();
   let minCategoryPrice = Infinity;
   let maxCategoryPrice = 0;
 
-  for (const p of allCategoryProducts) {
+  for (const p of (allCategoryProducts ?? [])) {
     if (p.brand) {
       brandCountMap.set(p.brand, (brandCountMap.get(p.brand) || 0) + 1);
     }
@@ -183,24 +212,24 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     count,
   }));
 
-  // 7. Compute dynamic config facets with counts and preserve admin sort order
+  // 9. Compute dynamic config facets with counts and preserve admin sort order
   const groupOrderMap = new Map<string, number>();
   const facetMap = new Map<string, Map<string, number>>();
 
-  for (const p of allCategoryProducts) {
-    for (const g of p.optionGroups) {
-      const gName = (g.label || g.name).trim();
+  for (const p of (allCategoryProducts ?? [])) {
+    for (const g of (p.optionGroups ?? [])) {
+      const gName = (g.label || g.name || '').trim();
       if (!gName) continue;
 
       if (!groupOrderMap.has(gName)) {
-        groupOrderMap.set(gName, g.sortOrder);
+        groupOrderMap.set(gName, g.sortOrder ?? 0);
       }
 
       if (!facetMap.has(gName)) {
         facetMap.set(gName, new Map());
       }
       const valMap = facetMap.get(gName)!;
-      for (const v of g.values) {
+      for (const v of (g.values ?? [])) {
         const vLabel = v.label?.trim();
         if (vLabel) {
           valMap.set(vLabel, (valMap.get(vLabel) || 0) + 1);
