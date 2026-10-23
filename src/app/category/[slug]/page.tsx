@@ -28,11 +28,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
-  const cats = await prisma.category.findMany({ select: { slug: true } }).catch(() => []);
-  return cats.map((c) => ({ slug: c.slug }));
-}
-
 export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
 export const revalidate = 0;

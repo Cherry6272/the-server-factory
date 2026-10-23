@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { Server, ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -20,6 +21,11 @@ export function ProductGallery({
 }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const nextImage = useCallback(() => {
     if (!images || images.length === 0) return;
@@ -155,8 +161,8 @@ export function ProductGallery({
         </div>
       )}
 
-      {/* Fullscreen Lightbox Modal (z-[99999] ensuring it floats safely above sticky navbars) */}
-      {lightboxOpen && (
+      {/* Fullscreen Lightbox Modal (rendered directly to <body> via Portal to escape parent sticky stacking contexts) */}
+      {lightboxOpen && mounted && typeof document !== 'undefined' && createPortal(
         <div
           role="dialog"
           aria-modal="true"
@@ -232,7 +238,8 @@ export function ProductGallery({
               </button>
             </>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
