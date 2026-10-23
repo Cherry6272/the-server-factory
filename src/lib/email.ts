@@ -29,14 +29,20 @@ export function getFromEmail(): string {
   return process.env.EMAIL_FROM || 'ServerFactory <sales@theserverfactory.com>';
 }
 
-// Create Nodemailer transport
-function createTransport() {
+// Cached Nodemailer transport singleton with connection pooling
+let cachedTransporter: nodemailer.Transporter | null = null;
+
+function getTransporter() {
   if (!isEmailConfigured()) return null;
+  if (cachedTransporter) return cachedTransporter;
 
   const port = parseInt(process.env.SMTP_PORT || '465', 10);
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
 
-  return nodemailer.createTransport({
+  cachedTransporter = nodemailer.createTransport({
+    pool: true,
+    maxConnections: 3,
+    maxMessages: 100,
     host: process.env.SMTP_HOST,
     port,
     secure,
@@ -44,11 +50,13 @@ function createTransport() {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS || process.env.SMTP_PASSWORD,
     },
-    // Reasonable timeouts so serverless / API requests don't hang indefinitely
-    connectionTimeout: 8000,
-    greetingTimeout: 5000,
-    socketTimeout: 10000,
+    // Titan / Flockmail servers take 10-20s for initial TLS greeting
+    connectionTimeout: 30000,
+    greetingTimeout: 30000,
+    socketTimeout: 30000,
   });
+
+  return cachedTransporter;
 }
 
 /**
@@ -74,7 +82,7 @@ async function sendMailSafely({
     };
   }
 
-  const transporter = createTransport();
+  const transporter = getTransporter();
   if (!transporter) {
     return {
       success: false,
