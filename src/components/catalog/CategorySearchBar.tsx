@@ -42,7 +42,7 @@ export function CategorySearchBar({ categoryName, currentSlug }: { categoryName:
   return (
     <form
       onSubmit={handleSearch}
-      className="group relative flex w-full items-center rounded-2xl border border-gray-200/90 bg-white px-3.5 py-2 shadow-xs transition-all duration-200 focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/15 hover:border-brand/50 dark:border-gray-800 dark:bg-navy-900/90 dark:focus-within:border-brand sm:px-4 sm:py-2.5"
+      className="group relative flex w-full items-center rounded-2xl border border-gray-200/90 bg-white px-3.5 py-2 shadow-xs transition-all duration-200 focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/15 hover:border-brand/50 dark:border-navy-700/80 dark:bg-navy-900/95 dark:hover:border-navy-600 dark:focus-within:border-brand dark:focus-within:ring-brand/20 sm:px-4 sm:py-2.5"
       role="search"
     >
       <Search className="h-4.5 w-4.5 flex-shrink-0 text-brand transition-transform group-focus-within:scale-110" aria-hidden="true" />
@@ -51,7 +51,7 @@ export function CategorySearchBar({ categoryName, currentSlug }: { categoryName:
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={`Search in ${categoryName} (e.g. Dell PowerEdge, Xeon, RTX 4090, 64GB)...`}
-        className="w-full min-w-0 bg-transparent px-2.5 text-xs font-medium text-ink outline-none placeholder:text-gray-400 dark:text-gray-100 sm:text-sm"
+        className="w-full min-w-0 !bg-transparent bg-transparent border-0 !border-0 border-none !border-none px-2.5 text-xs font-medium text-ink shadow-none outline-none ring-0 focus:outline-none focus:ring-0 focus:border-none focus:!bg-transparent placeholder:text-gray-400 dark:text-gray-100 dark:placeholder:text-gray-500 sm:text-sm"
         aria-label={`Search hardware in ${categoryName}`}
       />
       {query && (

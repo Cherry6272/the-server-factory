@@ -68,7 +68,7 @@ export function ProductImageManager({
     <div>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-display font-bold">Images</h2>
+          <h2 className="font-display font-bold text-ink dark:text-white">Images</h2>
           <p className="mt-0.5 text-sm text-ink-muted dark:text-gray-400">
             The first image is the primary one shown in listings. Drag order with the arrows.
           </p>
@@ -77,7 +77,7 @@ export function ProductImageManager({
       </div>
 
       {images.length === 0 ? (
-        <div className="mt-4 rounded-xl border border-dashed border-gray-300 p-8 text-center dark:border-gray-700">
+        <div className="mt-4 rounded-xl border border-dashed border-gray-300 p-8 text-center dark:border-navy-700">
           <p className="text-sm text-ink-muted dark:text-gray-400">
             No images yet. Uploaded files go to Cloudinary and are attached when you save.
           </p>
@@ -87,9 +87,9 @@ export function ProductImageManager({
           {images.map((img, i) => (
             <li
               key={`${img.publicId ?? img.url}-${i}`}
-              className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
+              className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-navy-700 dark:bg-navy-900/60"
             >
-              <div className="relative aspect-[4/3] border-b border-gray-100 bg-white p-2 dark:border-gray-800 dark:bg-gray-950/60">
+              <div className="relative aspect-[4/3] border-b border-gray-100 bg-white p-2 dark:border-navy-800 dark:bg-navy-950/60">
                 <div className="relative h-full w-full">
                   <Image
                     src={img.url}
@@ -120,7 +120,7 @@ export function ProductImageManager({
                   value={img.alt ?? ''}
                   onChange={(e) => setAlt(i, e.target.value)}
                   placeholder="Alt text (for accessibility & SEO)"
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs outline-none focus:border-brand focus:bg-white dark:border-gray-700 dark:bg-gray-800"
+                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs outline-none focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100 dark:focus:bg-navy-900"
                 />
                 <div className="mt-2 flex items-center justify-between">
                   <div className="flex items-center gap-1">
@@ -128,7 +128,7 @@ export function ProductImageManager({
                       type="button"
                       onClick={() => move(i, -1)}
                       disabled={i === 0}
-                      className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30"
+                      className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30 dark:text-gray-400"
                       aria-label="Move earlier"
                     >
                       <ArrowLeft className="h-3.5 w-3.5" />
@@ -137,7 +137,7 @@ export function ProductImageManager({
                       type="button"
                       onClick={() => move(i, 1)}
                       disabled={i === images.length - 1}
-                      className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30"
+                      className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30 dark:text-gray-400"
                       aria-label="Move later"
                     >
                       <ArrowRight className="h-3.5 w-3.5" />
@@ -146,7 +146,7 @@ export function ProductImageManager({
                   <button
                     type="button"
                     onClick={() => remove(i)}
-                    className="rounded p-1.5 text-red-500 hover:text-red-600"
+                    className="rounded p-1.5 text-red-500 hover:text-red-400"
                     aria-label="Remove image"
                   >
                     <Trash2 className="h-3.5 w-3.5" />

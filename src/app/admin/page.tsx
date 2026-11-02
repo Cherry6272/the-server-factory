@@ -21,7 +21,7 @@ export default async function AdminDashboard() {
 
   return (
     <div className="p-4 md:p-8">
-      <h1 className="font-display text-2xl font-extrabold md:text-3xl">Dashboard</h1>
+      <h1 className="font-display text-2xl font-extrabold md:text-3xl text-ink dark:text-white">Dashboard</h1>
       <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">Overview of your store performance.</p>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 md:mt-8 md:grid-cols-4">
@@ -34,7 +34,7 @@ export default async function AdminDashboard() {
       <div className="mt-8 grid gap-6 lg:grid-cols-[2fr_1fr] md:mt-10 md:gap-8">
         <section className="card overflow-hidden">
           <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-800 md:px-6 md:py-4">
-            <h2 className="font-display font-bold">Recent Orders</h2>
+            <h2 className="font-display font-bold text-ink dark:text-white">Recent Orders</h2>
             <Link href="/admin/orders" className="text-sm font-semibold text-brand hover:underline">View all →</Link>
           </div>
           {recentOrders.length === 0 ? (
@@ -60,7 +60,7 @@ export default async function AdminDashboard() {
                         <span className="block max-w-[160px] truncate">{o.user.email}</span>
                       </td>
                       <td className="px-4 py-3 md:px-6"><StatusBadge status={o.status} /></td>
-                      <td className="px-4 py-3 text-right font-semibold md:px-6">{formatINR(o.total)}</td>
+                      <td className="px-4 py-3 text-right font-semibold md:px-6 text-ink dark:text-white">{formatINR(o.total)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -70,7 +70,7 @@ export default async function AdminDashboard() {
         </section>
 
         <section className="card overflow-hidden">
-          <h2 className="border-b border-gray-100 px-4 py-3 font-display font-bold dark:border-gray-800 md:px-6 md:py-4">Top Products</h2>
+          <h2 className="border-b border-gray-100 px-4 py-3 font-display font-bold dark:border-gray-800 md:px-6 md:py-4 text-ink dark:text-white">Top Products</h2>
           {topProducts.length === 0 ? (
             <p className="p-8 text-center text-sm text-ink-muted dark:text-gray-400">No sales data yet.</p>
           ) : (
@@ -79,7 +79,7 @@ export default async function AdminDashboard() {
                 <li key={p.productId} className="flex items-center justify-between px-4 py-3 text-sm md:px-6 md:py-4">
                   <span className="flex items-center gap-3 min-w-0">
                     <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-brand-50 text-xs font-bold text-brand dark:bg-brand/10">{idx + 1}</span>
-                    <span className="truncate font-medium">{p.productName}</span>
+                    <span className="truncate font-medium text-ink dark:text-gray-100">{p.productName}</span>
                   </span>
                   <span className="flex-shrink-0 text-ink-muted dark:text-gray-400">{p._sum.quantity} sold</span>
                 </li>
@@ -99,7 +99,7 @@ function StatCard({ icon: Icon, label, value, accent = false }: { icon: any; lab
         <p className={`text-xs md:text-sm ${accent ? 'text-white/90' : 'text-ink-muted dark:text-gray-400'}`}>{label}</p>
         <Icon className={`h-4 w-4 md:h-5 md:w-5 ${accent ? 'text-white/80' : 'text-brand'}`} />
       </div>
-      <p className={`mt-2 text-xl font-extrabold md:mt-3 md:text-2xl ${accent ? 'text-white' : ''}`}>{value}</p>
+      <p className={`mt-2 text-xl font-extrabold md:mt-3 md:text-2xl ${accent ? 'text-white' : 'text-ink dark:text-white'}`}>{value}</p>
     </div>
   );
 }

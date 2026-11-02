@@ -24,10 +24,10 @@ export function ProductCard({ product }: Props) {
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:shadow-brand dark:border-gray-800 dark:bg-gray-900"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200/90 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:shadow-brand dark:border-navy-800/80 dark:bg-navy-900/90 dark:hover:border-brand/70 dark:hover:shadow-[0_8px_30px_rgb(0,102,204,0.22)]"
     >
       {/* Product Image Canvas - Normalized Pedestal */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-gray-100 bg-white p-3.5 dark:border-gray-800/80 dark:bg-gray-950/60 sm:p-5">
+      <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-gray-100 bg-white p-3.5 dark:border-navy-800/70 dark:bg-[#081d36]/70 sm:p-5">
         {img ? (
           <div className="relative h-full w-full">
             <Image
@@ -39,7 +39,7 @@ export function ProductCard({ product }: Props) {
             />
           </div>
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl bg-gray-50 text-gray-400 dark:bg-gray-800/40 dark:text-gray-500">
+          <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl bg-gray-50 text-gray-400 dark:bg-navy-950/60 dark:text-gray-500">
             <Server className="h-7 w-7 opacity-50" />
             <span className="text-[11px] font-medium">Specs Available</span>
           </div>
@@ -82,7 +82,7 @@ export function ProductCard({ product }: Props) {
             </div>
           )}
 
-          <span className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-brand/70 bg-transparent px-3 py-1.5 text-xs font-semibold text-brand transition-all duration-200 group-hover:bg-brand group-hover:text-white group-hover:shadow-brand xs:px-4 xs:py-2 sm:text-sm">
+          <span className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-brand/70 bg-transparent px-3 py-1.5 text-xs font-semibold text-brand transition-all duration-200 group-hover:bg-brand group-hover:text-white group-hover:shadow-brand dark:border-brand/60 dark:text-brand-300 dark:group-hover:bg-brand dark:group-hover:text-white xs:px-4 xs:py-2 sm:text-sm">
             {price > 0 ? 'Configure Now' : 'Configure & Enquire'}
           </span>
         </div>

@@ -46,17 +46,14 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: 'cover',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#061527' },
-  ],
+  themeColor: '#061527',
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const contact = await getContactSettings();
 
   return (
-    <html lang="en">
+    <html lang="en" className="dark" style={{ colorScheme: 'dark' }} suppressHydrationWarning>
       <head>
         {/* Runtime font loading — avoids build-time Google Fonts fetch errors */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -65,9 +62,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
           rel="stylesheet"
         />
+        {/* Anti-flash inline script: Dark theme default; purges legacy light key; respects explicit light choice in serverfactory_theme_mode */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('serverfactory.theme');if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}`,
+            __html: `try{localStorage.removeItem('serverfactory.theme');var t=localStorage.getItem('serverfactory_theme_mode');if(t==='light'){document.documentElement.classList.remove('dark');document.documentElement.style.colorScheme='light';}else{document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';}}catch(e){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';}`,
           }}
         />
         <script

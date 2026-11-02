@@ -28,8 +28,14 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    }
+    return () => {
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = '';
+      }
+    };
   }, [mobileOpen]);
 
   useEffect(() => {
@@ -55,9 +61,9 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
     exact ? pathname === href : pathname === href || pathname.startsWith(href + '/');
 
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950">
-      <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 lg:flex">
-        <div className="border-b border-gray-100 px-6 py-5 dark:border-gray-800">
+    <div className="flex min-h-screen bg-gray-50 text-ink dark:bg-[#040e1c] dark:text-gray-100">
+      <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r border-gray-200 bg-white dark:border-navy-800/80 dark:bg-[#07192f] lg:flex">
+        <div className="border-b border-gray-100 px-6 py-5 dark:border-navy-800">
           <Link href="/admin" className="font-display text-xl font-extrabold">
             <span className="text-brand">SF</span> <span className="text-ink dark:text-white">Admin</span>
           </Link>
@@ -69,10 +75,10 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
               key={n.href}
               href={n.href}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition',
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition font-medium',
                 isActive(n.href, n.exact)
                   ? 'bg-brand text-white shadow-brand'
-                  : 'text-ink hover:bg-brand-50 hover:text-brand-700 dark:text-gray-100 dark:hover:bg-gray-800 dark:hover:text-brand'
+                  : 'text-gray-700 hover:bg-brand-50 hover:text-brand-700 dark:text-gray-300 dark:hover:bg-navy-800 dark:hover:text-white'
               )}
             >
               <n.icon className="h-4 w-4" />
@@ -80,14 +86,14 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
             </Link>
           ))}
         </nav>
-        <div className="border-t border-gray-100 p-4 dark:border-gray-800 space-y-1">
+        <div className="border-t border-gray-100 p-4 dark:border-navy-800 space-y-1">
           <div className="flex items-center justify-between px-3 py-1.5 mb-1">
             <span className="text-xs font-medium text-ink-muted dark:text-gray-400">Theme</span>
             <ThemeToggle />
           </div>
           <Link
             href="/"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-ink hover:bg-brand-50 hover:text-brand-700 dark:text-gray-100 dark:hover:bg-gray-800 transition"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-brand-50 hover:text-brand-700 dark:text-gray-300 dark:hover:bg-navy-800 dark:hover:text-white transition font-medium"
             target="_blank"
           >
             <ExternalLink className="h-4 w-4" /> View site
@@ -102,9 +108,9 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-gray-200 bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900 lg:hidden">
+        <div className="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-gray-200 bg-white px-4 py-3 dark:border-navy-800 dark:bg-[#07192f] lg:hidden">
           <div className="flex items-center gap-2">
-            <button onClick={() => setMobileOpen(true)} className="flex h-9 w-9 items-center justify-center rounded-lg text-ink hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800" aria-label="Open menu">
+            <button onClick={() => setMobileOpen(true)} className="flex h-9 w-9 items-center justify-center rounded-lg text-ink hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-navy-800" aria-label="Open menu">
               <Menu className="h-5 w-5" />
             </button>
             <Link href="/admin" className="font-display text-lg font-extrabold">
@@ -130,12 +136,12 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
             aria-hidden="true"
           />
           {/* Drawer panel with z-10 on top of backdrop */}
-          <div className="relative z-10 flex h-full w-[85vw] max-w-xs flex-col overflow-y-auto bg-white shadow-2xl dark:bg-gray-900 animate-in slide-in-from-left duration-200">
-            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800">
+          <div className="relative z-10 flex h-full w-[85vw] max-w-xs flex-col overflow-y-auto bg-white shadow-2xl dark:border-r dark:border-navy-800 dark:bg-[#07192f] animate-in slide-in-from-left duration-200">
+            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-navy-800">
               <Link href="/admin" className="font-display text-lg font-extrabold">
                 <span className="text-brand">SF</span> <span className="text-ink dark:text-white">Admin</span>
               </Link>
-              <button onClick={() => setMobileOpen(false)} className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Close">
+              <button onClick={() => setMobileOpen(false)} className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-navy-800" aria-label="Close">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -146,10 +152,10 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
                   key={n.href}
                   href={n.href}
                   className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition',
+                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition font-medium',
                     isActive(n.href, n.exact)
                       ? 'bg-brand text-white shadow-sm'
-                      : 'text-ink hover:bg-brand-50 dark:text-gray-100 dark:hover:bg-gray-800'
+                      : 'text-gray-700 hover:bg-brand-50 dark:text-gray-300 dark:hover:bg-navy-800 dark:hover:text-white'
                   )}
                 >
                   <n.icon className="h-4 w-4" />
@@ -157,7 +163,7 @@ export function AdminShell({ user, children }: { user: { email: string; name: st
                 </Link>
               ))}
             </nav>
-            <div className="mt-auto space-y-1 border-t border-gray-100 p-4 dark:border-gray-800">
+            <div className="mt-auto space-y-1 border-t border-gray-100 p-4 dark:border-navy-800">
               <Link href="/" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-ink-muted dark:text-gray-400" target="_blank">
                 <ExternalLink className="h-4 w-4" /> View site
               </Link>

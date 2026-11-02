@@ -1,16 +1,22 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.resolve(__dirname, 'src');
+    return config;
+  },
   images: {
-  remotePatterns: [
-    { protocol: 'https', hostname: 'res.cloudinary.com' },
-    { protocol: 'https', hostname: 'drive.google.com' },
-    { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
-    { protocol: 'https', hostname: 'images.unsplash.com' },
-    { protocol: 'https', hostname: 'plus.unsplash.com' },
-    { protocol: 'https', hostname: 'picsum.photos' },
-    { protocol: 'https', hostname: '**.cloudinary.com' },
-  ],
-},
+    remotePatterns: [
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      { protocol: 'https', hostname: 'drive.google.com' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'plus.unsplash.com' },
+      { protocol: 'https', hostname: 'picsum.photos' },
+      { protocol: 'https', hostname: '**.cloudinary.com' },
+    ],
+  },
   async redirects() {
     return [
       {

@@ -62,7 +62,7 @@ export function ConfigsEditor({ initial }: { initial: Settings }) {
     <div className="mt-6 max-w-3xl space-y-6 md:mt-8">
       {/* ── Contact details ─────────────────────────── */}
       <section className="card p-4 sm:p-6">
-        <h2 className="font-display text-lg font-bold">Contact details</h2>
+        <h2 className="font-display text-lg font-bold text-ink dark:text-white">Contact details</h2>
         <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">
           Shown in the site footer and on the Contact page.
         </p>
@@ -88,7 +88,7 @@ export function ConfigsEditor({ initial }: { initial: Settings }) {
           />
 
           <div>
-            <label className="text-sm font-semibold" htmlFor="cfg-address">Address</label>
+            <label className="text-sm font-semibold text-ink dark:text-gray-200" htmlFor="cfg-address">Address</label>
             <p className="mt-0.5 text-sm text-ink-muted dark:text-gray-400">
               Line breaks are preserved.
             </p>
@@ -99,33 +99,33 @@ export function ConfigsEditor({ initial }: { initial: Settings }) {
               onChange={(e) => setContact({ ...contact, address: e.target.value })}
               placeholder="Bengaluru, Karnataka, India"
               className={cn(
-                'mt-2 w-full min-w-0 rounded-xl border bg-gray-50 px-4 py-2.5 text-base outline-none transition focus:bg-white focus:ring-2 focus:ring-brand/20 dark:bg-gray-800',
-                addressEmpty ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand dark:border-gray-700'
+                'mt-2 w-full min-w-0 rounded-xl border bg-gray-50 px-4 py-2.5 text-base outline-none transition focus:bg-white focus:ring-2 focus:ring-brand/20 dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100 dark:focus:bg-navy-900',
+                addressEmpty ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand dark:border-navy-700'
               )}
             />
             {addressEmpty && <p className="mt-1 text-xs font-medium text-red-600">Address is required</p>}
           </div>
         </div>
 
-        <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+        <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-navy-700 dark:bg-navy-950/60">
           <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted dark:text-gray-400">
             Preview
           </p>
           <div className="mt-3 space-y-1.5 text-sm">
             <p>
               <span className="text-ink-muted dark:text-gray-400">Email: </span>
-              <span className="break-all font-medium">{contact.email || '—'}</span>
+              <span className="break-all font-medium text-ink dark:text-gray-100">{contact.email || '—'}</span>
             </p>
             <p>
               <span className="text-ink-muted dark:text-gray-400">Phone: </span>
-              <span className="font-medium">{contact.phone || '—'}</span>
+              <span className="font-medium text-ink dark:text-gray-100">{contact.phone || '—'}</span>
               <span className="ml-2 text-xs text-ink-muted dark:text-gray-500">
                 ({contact.phone ? telHref(contact.phone) : 'tel:'})
               </span>
             </p>
             <p className="flex gap-1">
               <span className="flex-shrink-0 text-ink-muted dark:text-gray-400">Address: </span>
-              <span className="whitespace-pre-line font-medium">{contact.address || '—'}</span>
+              <span className="whitespace-pre-line font-medium text-ink dark:text-gray-100">{contact.address || '—'}</span>
             </p>
           </div>
         </div>
@@ -133,7 +133,7 @@ export function ConfigsEditor({ initial }: { initial: Settings }) {
 
       {/* ── Product configurator ────────────────────── */}
       <section className="card p-4 sm:p-6">
-        <h2 className="font-display text-lg font-bold">Product configurator</h2>
+        <h2 className="font-display text-lg font-bold text-ink dark:text-white">Product configurator</h2>
         <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">
           Controls how the &ldquo;Choose a configuration&rdquo; section renders on every product page.
         </p>
@@ -146,18 +146,18 @@ export function ConfigsEditor({ initial }: { initial: Settings }) {
           onChange={(hideSpecLabels) => setConfigurator({ ...configurator, hideSpecLabels })}
         />
 
-        <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+        <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-navy-700 dark:bg-navy-950/60">
           <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted dark:text-gray-400">
             Preview
           </p>
           <div className="mt-3 space-y-1.5">
             {SAMPLE_SPECS.map((s) =>
               configurator.hideSpecLabels ? (
-                <p key={s.label} className="text-xs font-medium">{s.value}</p>
+                <p key={s.label} className="text-xs font-medium text-ink dark:text-gray-200">{s.value}</p>
               ) : (
                 <p key={s.label} className="flex items-baseline justify-between gap-2 text-xs">
                   <span className="text-ink-muted dark:text-gray-400">{s.label}</span>
-                  <span className="text-right font-medium">{s.value}</span>
+                  <span className="text-right font-medium text-ink dark:text-gray-200">{s.value}</span>
                 </p>
               )
             )}
@@ -207,7 +207,7 @@ function Field({
   const id = `cfg-${label.toLowerCase().replace(/\s+/g, '-')}`;
   return (
     <div>
-      <label className="text-sm font-semibold" htmlFor={id}>{label}</label>
+      <label className="text-sm font-semibold text-ink dark:text-gray-200" htmlFor={id}>{label}</label>
       {hint && <p className="mt-0.5 text-sm text-ink-muted dark:text-gray-400">{hint}</p>}
       <input
         id={id}
@@ -216,8 +216,8 @@ function Field({
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          'mt-2 w-full min-w-0 rounded-xl border bg-gray-50 px-4 py-2.5 text-base outline-none transition focus:bg-white focus:ring-2 focus:ring-brand/20 dark:bg-gray-800',
-          error ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand dark:border-gray-700'
+          'mt-2 w-full min-w-0 rounded-xl border bg-gray-50 px-4 py-2.5 text-base outline-none transition focus:bg-white focus:ring-2 focus:ring-brand/20 dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100 dark:focus:bg-navy-900',
+          error ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-brand dark:border-navy-700'
         )}
       />
       {error && <p className="mt-1 text-xs font-medium text-red-600">{error}</p>}
@@ -237,7 +237,7 @@ function Toggle({
   return (
     <div className={cn('flex items-start justify-between gap-4', className)}>
       <div className="min-w-0">
-        <p className="font-semibold">{label}</p>
+        <p className="font-semibold text-ink dark:text-gray-100">{label}</p>
         <p className="mt-0.5 text-sm text-ink-muted dark:text-gray-400">{description}</p>
       </div>
       <button

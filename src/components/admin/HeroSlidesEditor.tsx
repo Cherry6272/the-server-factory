@@ -47,22 +47,22 @@ export function HeroSlidesEditor({
     <div>
       <div className="space-y-3">
         {slides.map((slide, i) => (
-          <div key={i} className="rounded-xl border border-gray-200 p-3 dark:border-gray-700">
+          <div key={i} className="rounded-xl border border-gray-200 p-3 dark:border-navy-700 dark:bg-navy-900/40">
             <div className="mb-3 flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted dark:text-gray-400">
                 Slide {i + 1}
               </span>
               <div className="flex items-center gap-1">
                 <button type="button" onClick={() => move(i, -1)} disabled={i === 0}
-                  className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30" aria-label="Move up">
+                  className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30 dark:text-gray-400" aria-label="Move up">
                   <ArrowUp className="h-3.5 w-3.5" />
                 </button>
                 <button type="button" onClick={() => move(i, 1)} disabled={i === slides.length - 1}
-                  className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30" aria-label="Move down">
+                  className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30 dark:text-gray-400" aria-label="Move down">
                   <ArrowDown className="h-3.5 w-3.5" />
                 </button>
                 <button type="button" onClick={() => setSlides(slides.filter((_, idx) => idx !== i))}
-                  className="rounded p-1.5 text-red-500 hover:text-red-600" aria-label="Remove slide">
+                  className="rounded p-1.5 text-red-500 hover:text-red-400" aria-label="Remove slide">
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -70,7 +70,7 @@ export function HeroSlidesEditor({
 
             <div className="grid gap-3 sm:grid-cols-[200px_1fr]">
               <div>
-                <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
+                <div className="relative aspect-[16/9] overflow-hidden rounded-lg bg-gray-100 dark:bg-navy-950/60 dark:border dark:border-navy-800">
                   {slide.imageUrl ? (
                     <Image src={slide.imageUrl} alt="" fill sizes="200px" className="object-cover" unoptimized />
                   ) : (
@@ -110,7 +110,7 @@ export function HeroSlidesEditor({
         <button
           type="button"
           onClick={() => setSlides([...slides, {}])}
-          className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold hover:border-brand hover:text-brand dark:border-gray-700 dark:bg-gray-900"
+          className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold hover:border-brand hover:text-brand dark:border-navy-700 dark:bg-navy-900 dark:text-gray-200"
         >
           <Plus className="h-3 w-3" /> Add slide
         </button>
@@ -131,12 +131,12 @@ function SlideField({
 }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <label className="block">
-      <span className="text-xs font-semibold text-ink-muted dark:text-gray-400">{label}</span>
+      <span className="text-xs font-semibold text-ink-muted dark:text-gray-300">{label}</span>
       <input
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm outline-none focus:border-brand focus:bg-white dark:border-gray-700 dark:bg-gray-800"
+        className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm outline-none focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100 dark:focus:bg-navy-900"
       />
     </label>
   );

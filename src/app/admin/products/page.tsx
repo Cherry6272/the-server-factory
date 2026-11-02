@@ -25,7 +25,7 @@ export default async function AdminProductsPage() {
     <div className="p-4 md:p-8">
       <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 className="font-display text-2xl font-extrabold md:text-3xl">Products</h1>
+          <h1 className="font-display text-2xl font-extrabold md:text-3xl text-ink dark:text-white">Products</h1>
           <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">
             {products.length} products across {categories.length} categories
           </p>

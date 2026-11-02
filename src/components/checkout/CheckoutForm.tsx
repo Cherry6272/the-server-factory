@@ -181,21 +181,21 @@ export function CheckoutForm({ user }: { user: UserProfile }) {
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               rows={3}
-              className="mt-2 w-full min-w-0 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-base outline-none focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/20"
+              className="mt-2 w-full min-w-0 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-base outline-none focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/20 dark:border-navy-700 dark:bg-navy-950 dark:text-white dark:focus:bg-navy-900"
               placeholder="Any special delivery instructions?"
             />
           </div>
         </div>
 
         {error && (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300">{error}</div>
         )}
       </div>
 
       {/* Summary */}
       <aside className="card h-fit p-5 lg:sticky lg:top-24 md:p-6">
         <h2 className="font-display text-lg font-bold md:text-xl">Order Summary</h2>
-        <ul className="mt-4 space-y-3 border-b border-gray-100 pb-4 text-sm dark:border-gray-800">
+        <ul className="mt-4 space-y-3 border-b border-gray-100 pb-4 text-sm dark:border-navy-800">
           {items.map((i) => (
             <li key={i.key} className="flex justify-between gap-4">
               <span className="min-w-0 flex-1">
@@ -210,7 +210,7 @@ export function CheckoutForm({ user }: { user: UserProfile }) {
           <Row label="Subtotal" value={formatINR(subtotal)} />
           <Row label="GST (18%)" value={formatINR(tax)} />
         </div>
-        <div className="flex items-center justify-between border-t border-gray-100 py-4 dark:border-gray-800">
+        <div className="flex items-center justify-between border-t border-gray-100 py-4 dark:border-navy-800">
           <span className="font-display font-bold">Total</span>
           <span className="text-xl font-extrabold md:text-2xl">{formatINR(total)}</span>
         </div>
@@ -244,7 +244,7 @@ function Field({ label, value, onChange, type = 'text', required = false }: { la
         required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full min-w-0 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-base outline-none focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/20"
+        className="mt-1 w-full min-w-0 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-base outline-none focus:border-brand focus:bg-white focus:ring-2 focus:ring-brand/20 dark:border-navy-700 dark:bg-navy-950 dark:text-white dark:focus:bg-navy-900"
       />
     </div>
   );

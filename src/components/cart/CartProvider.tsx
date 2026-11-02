@@ -42,7 +42,8 @@ const CartContext = createContext<Ctx | null>(null);
 const STORAGE_KEY = 'serverfactory.cart.v1';
 
 function hashItem(productId: string, options: CartOption[]): string {
-  const opts = [...options].sort((a, b) => a.groupName.localeCompare(b.groupName)).map((o) => `${o.groupName}:${o.valueId}`).join('|');
+  const safeOpts = Array.isArray(options) ? options : [];
+  const opts = [...safeOpts].sort((a, b) => a.groupName.localeCompare(b.groupName)).map((o) => `${o.groupName}:${o.valueId}`).join('|');
   return `${productId}__${opts}`;
 }
 
@@ -53,42 +54,59 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setItems(JSON.parse(raw));
-    } catch {}
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          setItems(parsed);
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      }
+    } catch {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch {}
+    }
     setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (hydrated) localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    if (hydrated) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      } catch {}
+    }
   }, [items, hydrated]);
 
   const add = useCallback((item: Omit<CartItem, 'key'>) => {
     const key = hashItem(item.productId, item.options);
     setItems((prev) => {
-      const existing = prev.find((i) => i.key === key);
+      const current = Array.isArray(prev) ? prev : [];
+      const existing = current.find((i) => i && i.key === key);
       if (existing) {
-        return prev.map((i) => (i.key === key ? { ...i, quantity: i.quantity + item.quantity } : i));
+        return current.map((i) => (i && i.key === key ? { ...i, quantity: (i.quantity || 1) + (item.quantity || 1) } : i));
       }
-      return [...prev, { ...item, key }];
+      return [...current, { ...item, key }];
     });
   }, []);
 
   const remove = useCallback((key: string) => {
-    setItems((prev) => prev.filter((i) => i.key !== key));
+    setItems((prev) => (Array.isArray(prev) ? prev.filter((i) => i && i.key !== key) : []));
   }, []);
 
   const updateQty = useCallback((key: string, qty: number) => {
     if (qty <= 0) return remove(key);
-    setItems((prev) => prev.map((i) => (i.key === key ? { ...i, quantity: qty } : i)));
+    setItems((prev) => (Array.isArray(prev) ? prev.map((i) => (i && i.key === key ? { ...i, quantity: qty } : i)) : []));
   }, [remove]);
 
   const clear = useCallback(() => setItems([]), []);
 
-  const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
-  const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
+  const safeItems = Array.isArray(items) ? items : [];
+  const subtotal = safeItems.reduce((sum, i) => sum + (Number(i?.unitPrice) || 0) * (Number(i?.quantity) || 1), 0);
+  const itemCount = safeItems.reduce((sum, i) => sum + (Number(i?.quantity) || 0), 0);
 
   return (
-    <CartContext.Provider value={{ items, add, remove, updateQty, clear, subtotal, itemCount }}>
+    <CartContext.Provider value={{ items: safeItems, add, remove, updateQty, clear, subtotal, itemCount }}>
       {children}
     </CartContext.Provider>
   );

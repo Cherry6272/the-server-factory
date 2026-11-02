@@ -99,13 +99,18 @@ export function LandingEditor({ blocks: initial }: { blocks: Block[] }) {
 
   return (
     <div className="mt-8 space-y-4">
-      {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+      {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-300">{error}</div>}
 
       <div className="card p-5">
-        <h3 className="mb-3 font-bold">Add Block</h3>
+        <h3 className="mb-3 font-bold text-ink dark:text-white">Add Block</h3>
         <div className="flex flex-wrap gap-2">
           {BLOCK_TYPES.map((t) => (
-            <button key={t} onClick={() => addBlock(t)} disabled={loading === 'new'} className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold hover:border-brand hover:text-brand">
+            <button
+              key={t}
+              onClick={() => addBlock(t)}
+              disabled={loading === 'new'}
+              className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:border-brand hover:text-brand dark:border-navy-700 dark:bg-navy-950 dark:text-gray-200 dark:hover:border-brand"
+            >
               <Plus className="h-3 w-3" /> {t.replace(/_/g, ' ')}
             </button>
           ))}
@@ -120,21 +125,21 @@ export function LandingEditor({ blocks: initial }: { blocks: Block[] }) {
               <input
                 defaultValue={block.title ?? ''}
                 onBlur={(e) => save(block.id, { title: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-transparent bg-transparent px-2 py-1 text-lg font-bold hover:border-gray-200 focus:border-brand focus:bg-white"
+                className="mt-1 w-full rounded-lg border border-transparent bg-transparent px-2 py-1 text-lg font-bold hover:border-gray-200 focus:border-brand focus:bg-white dark:text-white dark:hover:border-navy-700 dark:focus:border-brand dark:focus:bg-navy-950"
                 placeholder="Block title (admin-only label)"
               />
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={() => move(block.id, -1)} disabled={idx === 0} className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30" title="Move up">
+              <button onClick={() => move(block.id, -1)} disabled={idx === 0} className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30 dark:text-gray-400" title="Move up">
                 <ArrowUp className="h-4 w-4" />
               </button>
-              <button onClick={() => move(block.id, 1)} disabled={idx === blocks.length - 1} className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30" title="Move down">
+              <button onClick={() => move(block.id, 1)} disabled={idx === blocks.length - 1} className="rounded p-1.5 text-ink-muted hover:text-brand disabled:opacity-30 dark:text-gray-400" title="Move down">
                 <ArrowDown className="h-4 w-4" />
               </button>
-              <button onClick={() => save(block.id, { isVisible: !block.isVisible })} className={`rounded p-1.5 ${block.isVisible ? 'text-brand' : 'text-ink-muted'}`} title={block.isVisible ? 'Hide' : 'Show'}>
+              <button onClick={() => save(block.id, { isVisible: !block.isVisible })} className={`rounded p-1.5 ${block.isVisible ? 'text-brand' : 'text-ink-muted dark:text-gray-500'}`} title={block.isVisible ? 'Hide' : 'Show'}>
                 {block.isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               </button>
-              <button onClick={() => remove(block.id)} className="rounded p-1.5 text-red-500 hover:text-red-600" title="Delete">
+              <button onClick={() => remove(block.id)} className="rounded p-1.5 text-red-500 hover:text-red-600 dark:hover:bg-red-950/20" title="Delete">
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
@@ -170,28 +175,28 @@ function BlockEditor({ block, onSave }: { block: Block; onSave: (data: any) => v
   return (
     <div>
       {/* Section background colour */}
-      <div className="mb-4 flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
-        <span className="text-xs font-semibold">Section Background</span>
+      <div className="mb-4 flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 dark:border-navy-700/80 dark:bg-navy-950/70">
+        <span className="text-xs font-semibold text-ink dark:text-gray-200">Section Background</span>
         <input
           type="color"
           value={sectionBg || '#ffffff'}
           onChange={(e) => setSectionBg(e.target.value)}
-          className="h-8 w-10 cursor-pointer rounded border border-gray-200"
+          className="h-8 w-10 cursor-pointer rounded border border-gray-200 dark:border-navy-700"
           title="Pick a background colour for this section"
         />
         {sectionBg ? (
           <>
-            <span className="font-mono text-xs text-ink-muted">{sectionBg}</span>
+            <span className="font-mono text-xs text-ink-muted dark:text-gray-300">{sectionBg}</span>
             <button
               type="button"
               onClick={() => setSectionBg('')}
-              className="text-xs text-ink-muted hover:text-red-500"
+              className="text-xs text-ink-muted hover:text-red-500 dark:text-gray-400"
             >
               Clear
             </button>
           </>
         ) : (
-          <span className="text-xs text-ink-muted">None (transparent)</span>
+          <span className="text-xs text-ink-muted dark:text-gray-400">None (transparent)</span>
         )}
       </div>
 
@@ -202,20 +207,20 @@ function BlockEditor({ block, onSave }: { block: Block; onSave: (data: any) => v
         />
       ) : (
         <>
-          <p className="mb-2 text-xs text-ink-muted">
+          <p className="mb-2 text-xs text-ink-muted dark:text-gray-400">
             Edit the data payload below. Refer to the README for schema of each block type.
           </p>
           <textarea
             value={json}
             onChange={(e) => setJson(e.target.value)}
             rows={8}
-            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 font-mono text-xs outline-none focus:border-brand focus:bg-white"
+            className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 font-mono text-xs outline-none focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950 dark:text-white dark:focus:border-brand dark:focus:bg-navy-900"
           />
           <div className="mt-2 flex items-center gap-3">
             <button onClick={handleSave} className="btn-brand text-sm">
               <Save className="h-3.5 w-3.5" /> Save
             </button>
-            {err && <span className="text-sm text-red-600">{err}</span>}
+            {err && <span className="text-sm text-red-600 dark:text-red-400">{err}</span>}
           </div>
         </>
       )}

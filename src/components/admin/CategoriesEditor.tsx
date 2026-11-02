@@ -186,7 +186,7 @@ function CategoryRow({
           value={name}
           onChange={(e) => setName(e.target.value)}
           className={cn(
-            'min-w-[120px] flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm hover:border-gray-200 focus:border-brand focus:bg-white dark:hover:border-gray-700 dark:focus:bg-gray-800',
+            'min-w-[120px] flex-1 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm hover:border-gray-200 focus:border-brand focus:bg-white dark:hover:border-navy-700 dark:focus:bg-navy-900 dark:text-gray-100',
             depth === 0 ? 'font-semibold' : 'font-normal'
           )}
           placeholder="Category name"
@@ -194,7 +194,7 @@ function CategoryRow({
         <input
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
-          className="hidden w-32 rounded-lg border border-transparent bg-transparent px-2 py-1 font-mono text-xs text-ink-muted hover:border-gray-200 focus:border-brand focus:bg-white dark:text-gray-400 dark:hover:border-gray-700 dark:focus:bg-gray-800 md:block"
+          className="hidden w-32 rounded-lg border border-transparent bg-transparent px-2 py-1 font-mono text-xs text-ink-muted hover:border-gray-200 focus:border-brand focus:bg-white dark:text-gray-400 dark:hover:border-navy-700 dark:focus:bg-navy-900 md:block"
           placeholder="slug"
         />
         <span className="text-xs text-ink-muted dark:text-gray-400 whitespace-nowrap">
@@ -300,7 +300,7 @@ function NewCategoryForm({
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800/50">
+    <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-navy-700 dark:bg-navy-900/60">
       <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-muted dark:text-gray-400">
         {parentId ? `New sub-category (level ${depth + 1})` : 'New top-level category'}
       </p>
@@ -310,18 +310,18 @@ function NewCategoryForm({
           placeholder="Name"
           value={name}
           onChange={(e) => { setName(e.target.value); if (!slug) setSlug(slugify(e.target.value)); }}
-          className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-brand dark:border-gray-700 dark:bg-gray-900"
+          className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-brand dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100 dark:focus:bg-navy-900"
         />
         <input
           placeholder="slug"
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
-          className="w-32 rounded-lg border border-gray-200 bg-white px-3 py-2 font-mono text-xs focus:border-brand dark:border-gray-700 dark:bg-gray-900"
+          className="w-32 rounded-lg border border-gray-200 bg-white px-3 py-2 font-mono text-xs focus:border-brand dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100 dark:focus:bg-navy-900"
         />
         <button onClick={submit} disabled={loading || !name.trim()} className="btn-brand text-sm">
           {loading ? 'Saving...' : 'Create'}
         </button>
-        <button onClick={onCancel} className="rounded-full border border-gray-200 px-4 py-2 text-sm dark:border-gray-700">
+        <button onClick={onCancel} className="rounded-full border border-gray-200 px-4 py-2 text-sm dark:border-navy-700 dark:text-gray-300 dark:hover:bg-navy-800">
           Cancel
         </button>
       </div>

@@ -4,24 +4,46 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark';
 const ThemeContext = createContext<{ theme: Theme; toggle: () => void } | null>(null);
-const STORAGE_KEY = 'serverfactory.theme';
+const STORAGE_KEY = 'serverfactory_theme_mode';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Light is the default per spec. Hydration-safe default = light.
-  const [theme, setTheme] = useState<Theme>('light');
+  // Dark is the default. Hydration-safe default = dark.
+  const [theme, setTheme] = useState<Theme>('dark');
 
-  // On mount, read user preference from localStorage (do NOT auto-follow system per spec)
+  // On mount, clear legacy light key and read user preference; default to dark if unset
   useEffect(() => {
-    const stored = typeof window !== 'undefined' ? (localStorage.getItem(STORAGE_KEY) as Theme | null) : null;
-    if (stored === 'dark' || stored === 'light') setTheme(stored);
+    try {
+      localStorage.removeItem('serverfactory.theme');
+      const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
+      if (stored === 'light') {
+        setTheme('light');
+        document.documentElement.classList.remove('dark');
+        document.documentElement.style.colorScheme = 'light';
+      } else {
+        setTheme('dark');
+        document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = 'dark';
+      }
+    } catch {
+      setTheme('dark');
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
+    }
   }, []);
 
-  // Reflect theme on <html> element
+  // Reflect theme on <html> element and colorScheme
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') root.classList.add('dark');
-    else root.classList.remove('dark');
-    try { localStorage.setItem(STORAGE_KEY, theme); } catch {}
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      root.style.colorScheme = 'dark';
+    } else {
+      root.classList.remove('dark');
+      root.style.colorScheme = 'light';
+    }
+    try {
+      localStorage.setItem(STORAGE_KEY, theme);
+    } catch {}
   }, [theme]);
 
   function toggle() {

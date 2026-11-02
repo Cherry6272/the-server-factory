@@ -119,7 +119,7 @@ export function ImageUploader({
         className={cn(
           'inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold transition',
           busy ? 'opacity-60' : 'hover:border-brand hover:text-brand',
-          'dark:border-gray-700 dark:bg-gray-900'
+          'dark:border-navy-700 dark:bg-navy-900 dark:text-gray-200'
         )}
       >
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}

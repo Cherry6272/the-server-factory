@@ -191,11 +191,11 @@ export function ContactForm({
       >
         {loading ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" /> Submitting Enquiry...
+            <Loader2 className="h-4 w-4 animate-spin" /> Submitting Request...
           </>
         ) : (
           <>
-            <Send className="h-4 w-4" /> Send Enquiry
+            <Send className="h-4 w-4" /> {productId ? 'Submit Estimate Request →' : 'Send Enquiry'}
           </>
         )}
       </button>

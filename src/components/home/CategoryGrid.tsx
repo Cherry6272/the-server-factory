@@ -50,7 +50,7 @@ export async function CategoryGrid({ heading }: { heading?: string }) {
             <Link
               key={cat.id}
               href={`/category/${cat.slug}`}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-200/90 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:shadow-brand dark:border-gray-800 dark:bg-navy-900/80 sm:p-6 lg:p-8"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-200/90 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:shadow-brand dark:border-navy-800/80 dark:bg-navy-900/90 dark:hover:border-brand/70 dark:hover:shadow-[0_8px_30px_rgb(0,102,204,0.22)] sm:p-6 lg:p-8"
             >
               <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand-50 transition-transform duration-500 group-hover:scale-150 dark:bg-brand/10" />
               
@@ -90,7 +90,7 @@ export async function CategoryGrid({ heading }: { heading?: string }) {
         {!hasRentals && (
           <Link
             href="/contact?inquiry=rentals"
-            className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-dashed border-techgreen-500/40 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-techgreen-500 hover:shadow-techgreen dark:border-techgreen-500/30 dark:bg-navy-900/80 sm:p-6 lg:p-8"
+            className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-dashed border-techgreen-500/40 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-techgreen-500 hover:shadow-techgreen dark:border-techgreen-500/30 dark:bg-navy-900/90 sm:p-6 lg:p-8"
           >
             <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-techgreen-50 transition-transform duration-500 group-hover:scale-150 dark:bg-techgreen-950/20" />
 

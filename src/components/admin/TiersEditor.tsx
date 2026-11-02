@@ -119,7 +119,7 @@ export function TiersEditor({
     <div className="card p-6">
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="font-display font-bold">Quick-Pick Tiers</h2>
+          <h2 className="font-display font-bold text-ink dark:text-white">Quick-Pick Tiers</h2>
           <p className="text-sm text-ink-muted dark:text-gray-400">
             Optional: define Basic / Intermediate / Advanced presets so customers can pick a bundle instead of configuring manually.
           </p>
@@ -149,11 +149,11 @@ export function TiersEditor({
           }
 
           return (
-            <div key={name} className="rounded-xl border border-gray-200 p-5 dark:border-gray-800">
+            <div key={name} className="rounded-xl border border-gray-200 p-5 dark:border-navy-700 dark:bg-navy-900/40">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-brand">{name}</span>
                 <div className="flex items-center gap-2">
-                  <label className="flex items-center gap-2 text-xs">
+                  <label className="flex items-center gap-2 text-xs text-ink dark:text-gray-300">
                     <input
                       type="checkbox"
                       checked={tier.isActive}
@@ -164,7 +164,7 @@ export function TiersEditor({
                   <button onClick={() => saveTier(name)} disabled={loading === name} className="btn-brand text-sm">
                     <Save className="h-3.5 w-3.5" /> {loading === name ? 'Saving...' : 'Save'}
                   </button>
-                  <button onClick={() => deleteTier(name)} className="text-red-500 hover:text-red-600">
+                  <button onClick={() => deleteTier(name)} className="text-red-500 hover:text-red-400">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
@@ -172,37 +172,37 @@ export function TiersEditor({
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="text-xs font-medium">Display Label</label>
+                  <label className="text-xs font-medium text-ink dark:text-gray-300">Display Label</label>
                   <input
                     value={tier.label}
                     onChange={(e) => setTier(name, { label: e.target.value })}
-                    className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:border-brand focus:bg-white"
+                    className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100 dark:focus:bg-navy-900"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-medium">Price Override (optional, ₹)</label>
+                  <label className="text-xs font-medium text-ink dark:text-gray-300">Price Override (optional, ₹)</label>
                   <input
                     type="number"
                     value={tier.priceOverride ?? ''}
                     onChange={(e) => setTier(name, { priceOverride: e.target.value === '' ? null : Number(e.target.value) })}
                     placeholder={`Auto: ${formatINR(computedPrice(tier))}`}
-                    className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:border-brand focus:bg-white"
+                    className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100 dark:focus:bg-navy-900"
                   />
                 </div>
               </div>
 
               <div className="mt-3">
-                <label className="text-xs font-medium">Description (optional)</label>
+                <label className="text-xs font-medium text-ink dark:text-gray-300">Description (optional)</label>
                 <input
                   value={tier.description}
                   onChange={(e) => setTier(name, { description: e.target.value })}
                   placeholder="e.g. Great for small workloads and dev environments"
-                  className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:border-brand focus:bg-white"
+                  className="mt-1 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100 dark:focus:bg-navy-900"
                 />
               </div>
 
               <div className="mt-5">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider">Preset Components</p>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink dark:text-gray-200">Preset Components</p>
                 <p className="mb-3 text-xs text-ink-muted dark:text-gray-400">
                   Pick one value per group. Customer will see these pre-selected when they choose this tier.
                 </p>
@@ -216,7 +216,7 @@ export function TiersEditor({
                       const selectedId = tier.selectionValueIds.find((id) => g.values.some((v) => v.id === id));
                       return (
                         <div key={g.id}>
-                          <p className="mb-1 text-xs font-medium">{g.label}</p>
+                          <p className="mb-1 text-xs font-medium text-ink dark:text-gray-300">{g.label}</p>
                           <div className="flex flex-wrap gap-2">
                             {g.values.map((v) => {
                               const selected = selectedId === v.id;
@@ -227,8 +227,8 @@ export function TiersEditor({
                                   onClick={() => setTierValue(name, g.id, v.id)}
                                   className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs transition ${
                                     selected
-                                      ? 'border-brand bg-brand-50 text-brand dark:bg-brand/10'
-                                      : 'border-gray-200 bg-white hover:border-brand-300 dark:border-gray-700 dark:bg-gray-800'
+                                      ? 'border-brand bg-brand-50 text-brand dark:bg-brand/20 dark:text-brand-300 dark:border-brand'
+                                      : 'border-gray-200 bg-white hover:border-brand-300 dark:border-navy-700 dark:bg-navy-900 dark:text-gray-200 hover:dark:border-brand-400'
                                   }`}
                                 >
                                   {selected && <Check className="h-3 w-3" />}
@@ -245,9 +245,9 @@ export function TiersEditor({
                 )}
               </div>
 
-              <div className="mt-5 rounded-lg bg-gray-50 px-4 py-3 dark:bg-gray-800">
+              <div className="mt-5 rounded-lg bg-gray-50 px-4 py-3 dark:bg-navy-950/60 dark:border dark:border-navy-800">
                 <p className="text-xs text-ink-muted dark:text-gray-400">Customer sees</p>
-                <p className="text-lg font-extrabold">{formatINR(computedPrice(tier))}</p>
+                <p className="text-lg font-extrabold text-ink dark:text-white">{formatINR(computedPrice(tier))}</p>
                 {tier.priceOverride !== null && <p className="text-xs text-brand">Price overridden</p>}
               </div>
             </div>

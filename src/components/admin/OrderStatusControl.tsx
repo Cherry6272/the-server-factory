@@ -34,14 +34,14 @@ export function OrderStatusControl({ orderId, currentStatus }: { orderId: string
       <select
         value={status}
         onChange={(e) => setStatus(e.target.value)}
-        className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+        className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm dark:border-navy-700 dark:bg-navy-950/60 dark:text-gray-100"
       >
         {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
       </select>
       <button onClick={save} disabled={loading || status === currentStatus} className="btn-brand w-full text-sm disabled:opacity-50">
         {loading ? 'Saving...' : 'Update Status'}
       </button>
-      {msg && <p className="text-xs text-ink-muted">{msg}</p>}
+      {msg && <p className="text-xs text-ink-muted dark:text-gray-400">{msg}</p>}
     </div>
   );
 }

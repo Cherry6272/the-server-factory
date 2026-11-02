@@ -73,21 +73,25 @@ export function ProductForm({ categories, product }: { categories: Category[]; p
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-6">
       <div className="card p-6">
-        <h2 className="mb-4 font-display font-bold">Basic Info</h2>
+        <h2 className="mb-4 font-display font-bold text-ink dark:text-white">Basic Info</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Name" value={form.name} onChange={(v) => setForm({ ...form, name: v, slug: isEdit ? form.slug : slugify(v) })} required />
           <Field label="SKU" value={form.sku} onChange={(v) => setForm({ ...form, sku: v })} required />
           <Field label="Slug" value={form.slug} onChange={(v) => setForm({ ...form, slug: v })} required />
           <Field label="Brand" value={form.brand} onChange={(v) => setForm({ ...form, brand: v })} />
           <div>
-            <label className="text-sm font-medium">Category *</label>
+            <label className="text-sm font-medium text-ink dark:text-gray-200">Category *</label>
             <select
               value={form.categoryId}
               onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
-              className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 outline-none focus:border-brand focus:bg-white"
+              className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 outline-none focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950 dark:text-white dark:focus:border-brand dark:focus:bg-navy-900"
               required
             >
-              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              {categories.map((c) => (
+                <option key={c.id} value={c.id} className="dark:bg-navy-950 dark:text-white">
+                  {c.name}
+                </option>
+              ))}
             </select>
           </div>
           <Field label="Base Price (₹)" type="number" value={String(form.basePrice)} onChange={(v) => setForm({ ...form, basePrice: Number(v) })} required />
@@ -97,20 +101,20 @@ export function ProductForm({ categories, product }: { categories: Category[]; p
           <Field label="Short Description" value={form.shortDesc} onChange={(v) => setForm({ ...form, shortDesc: v })} />
         </div>
         <div className="mt-4">
-          <label className="text-sm font-medium">Long Description</label>
+          <label className="text-sm font-medium text-ink dark:text-gray-200">Long Description</label>
           <textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             rows={5}
-            className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 outline-none focus:border-brand focus:bg-white"
+            className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 outline-none focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950 dark:text-white dark:focus:border-brand dark:focus:bg-navy-900"
           />
         </div>
         <div className="mt-4 flex gap-6">
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 text-ink dark:text-gray-200">
             <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="rounded text-brand" />
             <span className="text-sm">Active</span>
           </label>
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 text-ink dark:text-gray-200">
             <input type="checkbox" checked={form.isFeatured} onChange={(e) => setForm({ ...form, isFeatured: e.target.checked })} className="rounded text-brand" />
             <span className="text-sm">Featured on homepage</span>
           </label>
@@ -126,28 +130,28 @@ export function ProductForm({ categories, product }: { categories: Category[]; p
       </div>
 
       <div className="card p-6">
-        <h2 className="mb-4 font-display font-bold">SEO</h2>
+        <h2 className="mb-4 font-display font-bold text-ink dark:text-white">SEO</h2>
         <Field label="Meta Title" value={form.metaTitle} onChange={(v) => setForm({ ...form, metaTitle: v })} />
         <div className="mt-4">
-          <label className="text-sm font-medium">Meta Description</label>
+          <label className="text-sm font-medium text-ink dark:text-gray-200">Meta Description</label>
           <textarea
             value={form.metaDescription}
             onChange={(e) => setForm({ ...form, metaDescription: e.target.value })}
             rows={3}
-            className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 outline-none focus:border-brand focus:bg-white"
+            className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 outline-none focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950 dark:text-white dark:focus:border-brand dark:focus:bg-navy-900"
           />
-          <p className="mt-1 text-xs text-ink-muted">Recommended: 150-160 characters for best SEO.</p>
+          <p className="mt-1 text-xs text-ink-muted dark:text-gray-400">Recommended: 150-160 characters for best SEO.</p>
         </div>
       </div>
 
-      {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+      {error && <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-300">{error}</div>}
 
       <div className="flex gap-3">
         <button type="submit" disabled={loading} className="btn-brand">
           <Save className="h-4 w-4" /> {loading ? 'Saving...' : 'Save'}
         </button>
         {isEdit && (
-          <button type="button" onClick={handleDelete} disabled={loading} className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-white px-6 py-3 font-semibold text-red-600 hover:bg-red-50">
+          <button type="button" onClick={handleDelete} disabled={loading} className="inline-flex items-center gap-2 rounded-full border border-red-200 bg-white px-6 py-3 font-semibold text-red-600 hover:bg-red-50 dark:border-red-800/80 dark:bg-navy-900 dark:text-red-400 dark:hover:bg-red-950/30">
             <Trash2 className="h-4 w-4" /> Delete
           </button>
         )}
@@ -159,13 +163,13 @@ export function ProductForm({ categories, product }: { categories: Category[]; p
 function Field({ label, value, onChange, type = 'text', required = false }: { label: string; value: string; onChange: (v: string) => void; type?: string; required?: boolean }) {
   return (
     <div>
-      <label className="text-sm font-medium">{label}{required && <span className="text-brand"> *</span>}</label>
+      <label className="text-sm font-medium text-ink dark:text-gray-200">{label}{required && <span className="text-brand"> *</span>}</label>
       <input
         type={type}
         required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 outline-none focus:border-brand focus:bg-white"
+        className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 outline-none focus:border-brand focus:bg-white dark:border-navy-700 dark:bg-navy-950 dark:text-white dark:focus:border-brand dark:focus:bg-navy-900"
       />
     </div>
   );
