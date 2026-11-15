@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ArrowRight, ShieldCheck, Cpu, HardDrive, Network, Wrench } from 'lucide-react';
 
-type Slide = { imageUrl: string; heading: string; subheading?: string; ctaText?: string; ctaLink?: string };
+type Slide = { imageUrl?: string; heading?: string; subheading?: string; ctaText?: string; ctaLink?: string };
 
 const PILLARS = [
   { label: 'SERVERS', icon: Cpu },
@@ -17,24 +17,29 @@ const PILLARS = [
 export function HeroCarousel({ slides }: { slides: Slide[] }) {
   const [i, setI] = useState(0);
 
-  useEffect(() => {
-    if (slides.length <= 1) return;
-    const id = setInterval(() => setI((v) => (v + 1) % slides.length), 6500);
-    return () => clearInterval(id);
-  }, [slides.length]);
+  const safeSlides = Array.isArray(slides) ? slides.filter(Boolean) : [];
 
-  if (!slides.length) return null;
-  const slide = slides[i];
+  useEffect(() => {
+    if (safeSlides.length <= 1) return;
+    const id = setInterval(() => setI((v) => (v + 1) % safeSlides.length), 6500);
+    return () => clearInterval(id);
+  }, [safeSlides.length]);
+
+  if (!safeSlides.length) return null;
+  const slide = safeSlides[i] || safeSlides[0];
+  if (!slide) return null;
+
+  const headingText = (slide.heading || '').trim();
 
   return (
     <div className="relative">
       <section className="relative h-[clamp(24rem,72vh,42rem)] overflow-hidden">
-        {slides.map((s, idx) => (
+        {safeSlides.map((s, idx) => (
           <div
             key={idx}
             className={`absolute inset-0 transition-opacity duration-1000 ${idx === i ? 'opacity-100' : 'opacity-0'}`}
             style={{
-              backgroundImage: `linear-gradient(rgba(6,21,39,0.70), rgba(6,21,39,0.85)), url(${s.imageUrl})`,
+              backgroundImage: `linear-gradient(rgba(6,21,39,0.70), rgba(6,21,39,0.85)), url(${s?.imageUrl || ''})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -58,16 +63,18 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
             SERVER FACTORY • ENTERPRISE INFRASTRUCTURE
           </div>
 
-          <h1 className="heading-hero animate-slide-up font-display font-extrabold tracking-tight drop-shadow-md">
-            {slide.heading.split(' ').map((w, idx, arr) => {
-              const midpoint = Math.floor(arr.length / 2);
-              return idx >= midpoint ? (
-                <span key={idx} className="bg-gradient-to-r from-sky-300 via-sky-100 to-techgreen-300 bg-clip-text text-transparent"> {w}</span>
-              ) : (
-                <span key={idx} className="text-white">{idx > 0 ? ' ' : ''}{w}</span>
-              );
-            })}
-          </h1>
+          {headingText && (
+            <h1 className="heading-hero animate-slide-up font-display font-extrabold tracking-tight drop-shadow-md">
+              {headingText.split(' ').map((w, idx, arr) => {
+                const midpoint = Math.floor(arr.length / 2);
+                return idx >= midpoint ? (
+                  <span key={idx} className="bg-gradient-to-r from-sky-300 via-sky-100 to-techgreen-300 bg-clip-text text-transparent"> {w}</span>
+                ) : (
+                  <span key={idx} className="text-white">{idx > 0 ? ' ' : ''}{w}</span>
+                );
+              })}
+            </h1>
+          )}
 
           {slide.subheading && (
             <p className="mt-4 max-w-2xl text-sm text-gray-200 sm:mt-6 sm:text-base md:text-lg leading-relaxed drop-shadow-sm">
@@ -94,24 +101,24 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
           </div>
         </div>
 
-        {slides.length > 1 && (
+        {safeSlides.length > 1 && (
           <>
             <button
-              onClick={() => setI((v) => (v - 1 + slides.length) % slides.length)}
+              onClick={() => setI((v) => (v - 1 + safeSlides.length) % safeSlides.length)}
               className="absolute left-2 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-navy-900/80 text-white shadow-xl backdrop-blur transition hover:bg-navy-800 xs:flex sm:left-4 sm:h-12 sm:w-12 lg:left-6 border border-white/10"
               aria-label="Previous slide"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
-              onClick={() => setI((v) => (v + 1) % slides.length)}
+              onClick={() => setI((v) => (v + 1) % safeSlides.length)}
               className="absolute right-2 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-navy-900/80 text-white shadow-xl backdrop-blur transition hover:bg-navy-800 xs:flex sm:right-4 sm:h-12 sm:w-12 lg:right-6 border border-white/10"
               aria-label="Next slide"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
             <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2 sm:bottom-6">
-              {slides.map((_, idx) => (
+              {safeSlides.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setI(idx)}
@@ -127,7 +134,7 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
       </section>
 
       {/* Pillars & Trust Ribbon matching Bytechip Board */}
-      <div className="border-y border-gray-200/80 bg-white shadow-sm dark:border-gray-800 dark:bg-navy-900">
+      <div className="border-y border-gray-200/80 bg-white shadow-sm dark:border-navy-800/80 dark:bg-navy-950">
         <div className="container-page py-3 sm:py-4">
           <div className="flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
             <div className="flex flex-wrap items-center gap-2 sm:gap-4 font-display font-bold tracking-wider text-navy-900 dark:text-gray-200">
@@ -136,8 +143,8 @@ export function HeroCarousel({ slides }: { slides: Slide[] }) {
               </span>
               {PILLARS.map((p, idx) => (
                 <span key={p.label} className="inline-flex items-center gap-1.5">
-                  {idx > 0 && <span className="text-gray-300 dark:text-gray-700 hidden sm:inline">•</span>}
-                  <span className="hover:text-brand transition-colors cursor-pointer">{p.label}</span>
+                  {idx > 0 && <span className="text-gray-300 dark:text-navy-700 hidden sm:inline">•</span>}
+                  <span className="hover:text-brand dark:hover:text-brand-300 transition-colors cursor-pointer">{p.label}</span>
                 </span>
               ))}
             </div>

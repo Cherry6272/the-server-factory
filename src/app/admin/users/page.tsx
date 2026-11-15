@@ -8,7 +8,7 @@ export default async function AdminUsersPage() {
 
   return (
     <div className="p-4 md:p-8">
-      <h1 className="font-display text-2xl font-extrabold md:text-3xl">Users</h1>
+      <h1 className="font-display text-2xl font-extrabold md:text-3xl text-ink dark:text-white">Users</h1>
       <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">{users.length} registered</p>
 
       {/* Mobile cards */}
@@ -17,7 +17,7 @@ export default async function AdminUsersPage() {
           <div key={u.id} className="card p-4">
             <div className="flex items-start justify-between">
               <div className="min-w-0">
-                <p className="font-medium">{u.name ?? '—'}</p>
+                <p className="font-medium text-ink dark:text-gray-100">{u.name ?? '—'}</p>
                 <p className="truncate text-xs text-ink-muted dark:text-gray-400">{u.email}</p>
               </div>
               <span className={`ml-2 flex-shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${u.role === 'ADMIN' ? 'bg-brand-50 text-brand-700 dark:bg-brand/10' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}>
@@ -48,14 +48,14 @@ export default async function AdminUsersPage() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {users.map((u) => (
                 <tr key={u.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                  <td className="px-6 py-3 font-medium">{u.name ?? '—'}</td>
+                  <td className="px-6 py-3 font-medium text-ink dark:text-gray-100">{u.name ?? '—'}</td>
                   <td className="px-6 py-3 text-ink-muted dark:text-gray-400">{u.email}</td>
                   <td className="px-6 py-3">
                     <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ${u.role === 'ADMIN' ? 'bg-brand-50 text-brand-700 dark:bg-brand/10' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}>
                       {u.role}
                     </span>
                   </td>
-                  <td className="px-6 py-3">{u._count.orders}</td>
+                  <td className="px-6 py-3 text-ink dark:text-gray-200">{u._count.orders}</td>
                   <td className="px-6 py-3 text-ink-muted dark:text-gray-400">{new Date(u.createdAt).toLocaleDateString('en-IN')}</td>
                 </tr>
               ))}

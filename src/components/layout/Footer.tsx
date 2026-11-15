@@ -6,7 +6,7 @@ import { telHref, type ContactSettings } from '@/lib/site-settings';
 
 export function Footer({ contact }: { contact: ContactSettings }) {
   return (
-    <footer className="mt-12 border-t border-gray-200 bg-white dark:border-gray-800 dark:bg-navy-950 md:mt-24">
+    <footer className="mt-12 border-t border-gray-200 bg-white dark:border-navy-800/80 dark:bg-[#040f1d] md:mt-24">
       <div className="container-page py-10 md:py-16">
         <div className="grid gap-8 xs:grid-cols-2 md:gap-10 lg:grid-cols-5">
           <div className="xs:col-span-2">

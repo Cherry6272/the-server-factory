@@ -22,6 +22,7 @@ const PAGE_LINKS = [
 ];
 
 export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: UserInfo }) {
+  const safeRoots = Array.isArray(roots) ? roots : [];
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [userOpen, setUserOpen] = useState(false);
@@ -48,8 +49,14 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
 
   // Body scroll lock when mobile drawer open
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    }
+    return () => {
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = '';
+      }
+    };
   }, [mobileOpen]);
 
   // Escape closes dropdown
@@ -80,14 +87,14 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-950/95">
+      <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur dark:border-navy-800/80 dark:bg-[#061527]/90">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-4 lg:px-8 2xl:max-w-[1600px] 3xl:max-w-[1760px]">
 
           {/* Logo + hamburger — never shrinks, so the wordmark is never clipped */}
           <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
             <button
               onClick={() => setMobileOpen(true)}
-              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden"
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-navy-800 lg:hidden"
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
@@ -112,8 +119,9 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
               rather than squeezing the wordmark. Can't use overflow-x here: it would
               clip the hover dropdowns, which hang below the bar. */}
           <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex">
-            {roots.map((root) => {
-              const hasChildren = root.children.length > 0;
+            {safeRoots.map((root) => {
+              const safeChildren = Array.isArray(root?.children) ? root.children : [];
+              const hasChildren = safeChildren.length > 0;
               const isOpen = openId === root.id;
               return (
                 <div
@@ -127,8 +135,8 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
                     className={cn(
                       'flex items-center gap-1 rounded-full px-2.5 py-2 text-sm font-medium transition-colors xl:px-4',
                       isOpen
-                        ? 'bg-brand-50 text-brand-700 dark:bg-gray-800 dark:text-brand'
-                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-800'
+                        ? 'bg-brand-50 text-brand-700 dark:bg-navy-800 dark:text-brand-300'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-navy-800/60'
                     )}
                   >
                     {/* Safety net for unusually many or long categories: labels ellipsize
@@ -163,8 +171,8 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
                 className={cn(
                   'whitespace-nowrap rounded-full px-2.5 py-2 text-sm font-medium transition-colors xl:px-4',
                   pathname === link.href
-                    ? 'bg-brand-50 text-brand-700 dark:bg-gray-800 dark:text-brand'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-gray-800'
+                    ? 'bg-brand-50 text-brand-700 dark:bg-navy-800 dark:text-brand-300'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-navy-800/60'
                 )}
               >
                 {link.label}
@@ -181,11 +189,11 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
               <input
                 name="q"
                 placeholder="Search servers, workstations..."
-                className="w-52 rounded-full border-2 border-brand/30 py-2.5 pl-9 pr-4 text-sm font-medium outline-none transition-all placeholder:text-gray-400 focus:w-72 focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-gray-600 dark:bg-gray-900 dark:focus:border-brand 3xl:w-64 3xl:focus:w-80"
+                className="w-52 rounded-full border-2 border-brand/30 py-2.5 pl-9 pr-4 text-sm font-medium outline-none transition-all placeholder:text-gray-400 focus:w-72 focus:border-brand focus:ring-2 focus:ring-brand/20 dark:border-navy-700/80 dark:bg-navy-900/95 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-brand 3xl:w-64 3xl:focus:w-80"
               />
             </form>
             {/* Below xs the drawer carries the search entry so the wordmark isn't squeezed */}
-            <Link href="/search" className="hidden h-9 w-9 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 xs:flex 2xl:hidden" aria-label="Search">
+            <Link href="/search" className="hidden h-9 w-9 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-navy-800 xs:flex 2xl:hidden" aria-label="Search">
               <Search className="h-4 w-4" />
             </Link>
 
@@ -199,31 +207,31 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
               <div className="relative" ref={userRef}>
                 <button
                   onClick={() => setUserOpen((v) => !v)}
-                  className="flex h-9 w-9 items-center justify-center gap-1.5 rounded-full bg-brand-50 text-sm font-semibold text-brand-700 transition hover:bg-brand hover:text-white dark:bg-gray-800 dark:text-gray-100 xs:w-auto xs:px-3"
+                  className="flex h-9 w-9 items-center justify-center gap-1.5 rounded-full bg-brand-50 text-sm font-semibold text-brand-700 transition hover:bg-brand hover:text-white dark:bg-navy-800 dark:text-gray-100 dark:hover:bg-brand xs:w-auto xs:px-3"
                   aria-label="Account menu"
                 >
                   <User className="h-4 w-4 flex-shrink-0" />
                   {/* A long first name must not push the wordmark — cap and ellipsize it */}
-                  <span className="hidden max-w-[7rem] truncate sm:inline">{user.name?.split(' ')[0] ?? 'Account'}</span>
+                  <span className="hidden max-w-[7rem] truncate sm:inline">{user.name ? user.name.split(' ')[0] : 'Account'}</span>
                   <ChevronDown className="hidden h-3 w-3 flex-shrink-0 xs:block" />
                 </button>
 
                 {userOpen && (
-                  <div className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg dark:border-gray-800 dark:bg-gray-900">
-                    <div className="border-b border-gray-100 px-4 py-3 dark:border-gray-800">
+                  <div className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg dark:border-navy-700 dark:bg-navy-900">
+                    <div className="border-b border-gray-100 px-4 py-3 dark:border-navy-800">
                       <p className="text-sm font-semibold">{user.name ?? 'Account'}</p>
                       <p className="truncate text-xs text-gray-500">{user.email}</p>
                     </div>
                     <div className="p-1.5">
                       {user.role === 'ADMIN' && (
-                        <Link href="/admin" onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <Link href="/admin" onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-navy-800">
                           <LayoutDashboard className="h-4 w-4 text-brand" /> Admin Dashboard
                         </Link>
                       )}
-                      <Link href="/account" onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <Link href="/account" onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-navy-800">
                         <UserCircle className="h-4 w-4 text-brand" /> My Profile
                       </Link>
-                      <Link href="/account/orders" onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <Link href="/account/orders" onClick={() => setUserOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-navy-800">
                         <Package className="h-4 w-4 text-brand" /> Orders
                       </Link>
                     </div>
@@ -256,8 +264,8 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
       {mobileOpen && (
         <div className="fixed inset-0 z-[60] lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 flex h-full w-80 max-w-[85vw] flex-col bg-white shadow-xl dark:bg-gray-900">
-            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800">
+          <div className="absolute left-0 top-0 flex h-full w-80 max-w-[85vw] flex-col bg-white shadow-xl dark:border-r dark:border-navy-800 dark:bg-navy-950">
+            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-navy-800">
               <Link href="/" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
                 <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand to-navy-900 text-white">
                   <Server className="h-4 w-4" />
@@ -272,7 +280,7 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
                   </span>
                 </div>
               </Link>
-              <button onClick={() => setMobileOpen(false)} className="rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800" aria-label="Close menu">
+              <button onClick={() => setMobileOpen(false)} className="rounded-lg p-1.5 hover:bg-gray-100 dark:hover:bg-navy-800" aria-label="Close menu">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -283,11 +291,11 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
                 <input
                   name="q"
                   placeholder="Search hardware..."
-                  className="w-full rounded-full border border-gray-200 py-2.5 pl-9 pr-3 text-base outline-none focus:border-brand dark:border-gray-700 dark:bg-gray-800"
+                  className="w-full rounded-full border border-gray-200 py-2.5 pl-9 pr-3 text-base outline-none focus:border-brand dark:border-navy-700 dark:bg-navy-900 dark:text-white"
                 />
               </form>
               <nav className="p-3">
-                {roots.map((root) => (
+                {safeRoots.map((root) => (
                   <MobileNode
                     key={root.id}
                     node={root}
@@ -298,13 +306,13 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
                   />
                 ))}
 
-                <div className="my-2 border-t border-gray-100 dark:border-gray-800" />
+                <div className="my-2 border-t border-gray-100 dark:border-navy-800" />
                 {PAGE_LINKS.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm font-semibold hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="block rounded-lg px-3 py-2.5 text-sm font-semibold hover:bg-gray-50 dark:hover:bg-navy-800/70"
                   >
                     {link.label}
                   </Link>
@@ -348,9 +356,10 @@ export function NavbarClient({ roots, user }: { roots: CategoryNode[]; user: Use
 
 /** Simple dropdown: sub-categories as bold links, sub-sub-categories indented beneath each */
 function DropdownPanel({ root }: { root: CategoryNode }) {
+  const safeChildren = Array.isArray(root?.children) ? root.children : [];
   return (
-    <div className="min-w-[240px] max-w-[320px] overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
-      <div className="border-b border-gray-100 px-4 py-2.5 dark:border-gray-800">
+    <div className="min-w-[240px] max-w-[320px] overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl dark:border-navy-700 dark:bg-navy-900">
+      <div className="border-b border-gray-100 px-4 py-2.5 dark:border-navy-800">
         <Link
           href={`/category/${root.slug}`}
           className="text-xs font-semibold uppercase tracking-wider text-brand hover:underline"
@@ -360,29 +369,32 @@ function DropdownPanel({ root }: { root: CategoryNode }) {
       </div>
 
       <div className="max-h-[70vh] overflow-y-auto p-2">
-        {root.children.map((sub) => (
-          <div key={sub.id} className="mb-1">
-            <Link
-              href={`/category/${sub.slug}`}
-              className="block rounded-lg px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-brand-50 hover:text-brand dark:text-gray-100 dark:hover:bg-gray-800"
-            >
-              {sub.name}
-            </Link>
-            {sub.children.length > 0 && (
-              <div className="ml-3 mt-0.5 border-l border-gray-100 pl-3 dark:border-gray-700">
-                {sub.children.map((subsub) => (
-                  <Link
-                    key={subsub.id}
-                    href={`/category/${subsub.slug}`}
-                    className="block rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-brand-50 hover:text-brand dark:text-gray-400 dark:hover:bg-gray-800"
-                  >
-                    {subsub.name}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+        {safeChildren.map((sub) => {
+          const subChildren = Array.isArray(sub?.children) ? sub.children : [];
+          return (
+            <div key={sub.id} className="mb-1">
+              <Link
+                href={`/category/${sub.slug}`}
+                className="block rounded-lg px-3 py-2 text-sm font-semibold text-gray-800 hover:bg-brand-50 hover:text-brand dark:text-gray-100 dark:hover:bg-gray-800"
+              >
+                {sub.name}
+              </Link>
+              {subChildren.length > 0 && (
+                <div className="ml-3 mt-0.5 border-l border-gray-100 pl-3 dark:border-gray-700">
+                  {subChildren.map((subsub) => (
+                    <Link
+                      key={subsub.id}
+                      href={`/category/${subsub.slug}`}
+                      className="block rounded-md px-2 py-1 text-xs text-gray-500 hover:bg-brand-50 hover:text-brand dark:text-gray-400 dark:hover:bg-gray-800"
+                    >
+                      {subsub.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -398,7 +410,8 @@ function MobileNode({
   onToggle: (id: string) => void;
   onNavigate: () => void;
 }) {
-  const hasChildren = node.children.length > 0;
+  const safeChildren = Array.isArray(node?.children) ? node.children : [];
+  const hasChildren = safeChildren.length > 0;
   const isOpen = expanded.has(node.id);
   const indentStyle = depth > 0 ? { paddingLeft: `${depth * 12}px` } : {};
 
@@ -428,7 +441,7 @@ function MobileNode({
 
       {isOpen && hasChildren && (
         <div>
-          {node.children.map((child) => (
+          {safeChildren.map((child) => (
             <MobileNode
               key={child.id}
               node={child}

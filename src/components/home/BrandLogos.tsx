@@ -10,15 +10,17 @@ const LINKS: Record<string, string> = {
 };
 
 export function BrandLogos({ heading, brands }: { heading?: string; brands: string[] }) {
-  if (brands.length === 0) return null;
+  const safeBrands = Array.isArray(brands) ? brands.filter(Boolean) : [];
+  if (safeBrands.length === 0) return null;
+
   return (
-    <section className="border-y border-gray-200 bg-white py-8 dark:border-gray-800 dark:bg-gray-900 sm:py-10 md:py-12">
+    <section className="border-y border-gray-200 bg-white py-8 dark:border-navy-800/80 dark:bg-navy-950/70 sm:py-10 md:py-12">
       <div className="container-page">
-        {heading && <p className="mb-5 text-center text-xs font-semibold uppercase tracking-widest text-gray-400 sm:mb-8 sm:text-sm">{heading}</p>}
+        {heading && <p className="mb-5 text-center text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-400 sm:mb-8 sm:text-sm">{heading}</p>}
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 sm:gap-x-10 sm:gap-y-6 lg:gap-x-12">
-          {brands.map((brand) => {
+          {safeBrands.map((brand) => {
             const link = LINKS[brand];
-            const style = 'font-display text-lg font-bold text-gray-400 sm:text-xl lg:text-2xl';
+            const style = 'font-display text-lg font-bold text-gray-400 dark:text-gray-400 hover:dark:text-white sm:text-xl lg:text-2xl';
             return link ? (
               <a key={brand} href={link} target="_blank" rel="noopener noreferrer" className={`${style} transition hover:text-brand`}>{brand}</a>
             ) : (

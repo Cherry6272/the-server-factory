@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, ShoppingCart, Sparkles, Wrench, FileText } from 'lucide-react';
+import { Check, ShoppingCart, Sparkles, Wrench, FileText, ArrowRight } from 'lucide-react';
 import { useCart, type CartOption, type CartTier } from '@/components/cart/CartProvider';
 import { formatINR, cn } from '@/lib/utils';
 import { ProductEnquiryModal } from './ProductEnquiryModal';
@@ -165,38 +165,38 @@ export function Configurator({
     <div className="space-y-6">
       {/* Mode tabs - only if tiers exist */}
       {hasTiers && (
-        <div className="flex rounded-full bg-gray-100 p-1 dark:bg-gray-800">
+        <div className="flex rounded-full bg-gray-100 p-1 dark:bg-navy-950 dark:border dark:border-navy-800">
           <button
             type="button"
             onClick={() => setMode('quick')}
             className={cn(
-              'flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition',
-              mode === 'quick' ? 'bg-brand text-white shadow-brand' : 'text-ink-muted dark:text-gray-300'
+              'flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition',
+              mode === 'quick' ? 'bg-brand text-white shadow-brand' : 'text-ink-muted dark:text-gray-300 hover:text-ink dark:hover:text-white'
             )}
           >
-            <Sparkles className="h-4 w-4" /> Quick Pick
+            <Sparkles className="h-4 w-4" /> Pre-Configured Tiers
           </button>
           <button
             type="button"
             onClick={() => setMode('custom')}
             className={cn(
-              'flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition',
-              mode === 'custom' ? 'bg-brand text-white shadow-brand' : 'text-ink-muted dark:text-gray-300'
+              'flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition',
+              mode === 'custom' ? 'bg-brand text-white shadow-brand' : 'text-ink-muted dark:text-gray-300 hover:text-ink dark:hover:text-white'
             )}
           >
-            <Wrench className="h-4 w-4" /> Customize
+            <Wrench className="h-4 w-4" /> Customise Build
           </button>
         </div>
       )}
 
       <div>
         <h3 className="font-display text-lg font-bold">
-          {mode === 'quick' ? 'Choose a configuration' : 'Configure your build'}
+          {mode === 'quick' ? 'Select an Architecture Tier' : 'Customise Your Hardware Build'}
         </h3>
         <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">
           {mode === 'quick'
-            ? 'These configurations are fixed. To change any component, switch to Customize.'
-            : 'Select components to build your ideal ' + product.name + '.'}
+            ? 'Choose from verified enterprise configurations (Basic, Intermediate, Advanced). Or switch to Customise to specify individual parts.'
+            : 'Select individual processors, memory, storage, RAID, and power supplies to build your custom ' + product.name + '.'}
         </p>
       </div>
 
@@ -216,7 +216,7 @@ export function Configurator({
                   'flex min-w-0 h-full flex-col justify-between rounded-2xl border p-4 text-left transition sm:p-5',
                   selected
                     ? 'border-brand bg-brand-50/70 ring-2 ring-brand/30 dark:bg-brand/10'
-                    : 'border-gray-200 bg-white hover:border-brand-300 dark:border-gray-800 dark:bg-gray-900'
+                    : 'border-gray-200 bg-white hover:border-brand-300 dark:border-navy-800/80 dark:bg-navy-900/90 dark:hover:border-navy-600'
                 )}
               >
                 <div>
@@ -274,7 +274,7 @@ export function Configurator({
             onClick={() => setMode('custom')}
             className="font-semibold text-brand hover:underline"
           >
-            Switch to Customize
+            Switch to Customise
           </button>{' '}
           to build your own.
         </p>
@@ -303,7 +303,7 @@ export function Configurator({
                       'flex min-w-0 items-center justify-between gap-2 rounded-xl border p-3 text-left text-sm transition',
                       selected
                         ? 'border-brand bg-brand-50 ring-2 ring-brand/30 dark:bg-brand/10'
-                        : 'border-gray-200 bg-white hover:border-brand-300 dark:border-gray-800 dark:bg-gray-900'
+                        : 'border-gray-200 bg-white hover:border-brand-300 dark:border-navy-800/80 dark:bg-navy-900/90 dark:hover:border-navy-600'
                     )}
                   >
                     <span className="flex min-w-0 items-center gap-2">
@@ -322,19 +322,22 @@ export function Configurator({
       })}
 
       {/* Summary + add to cart / quote */}
-      <div className="sticky bottom-0 z-10 rounded-2xl border border-gray-200/90 bg-white/95 p-4 shadow-xl backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/95 sm:p-6">
+      <div className="sticky bottom-0 z-10 rounded-2xl border border-gray-200/90 bg-white/95 p-4 shadow-xl backdrop-blur-md dark:border-navy-800/80 dark:bg-navy-900/95 sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-2">
           <div>
-            <p className="text-xs uppercase tracking-wider text-ink-muted dark:text-gray-400">
-              {totalPrice > 0 ? 'Total Estimate' : 'Configuration Summary'}
-            </p>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-brand">
+                {mode === 'quick' ? (activeTier?.label ?? 'Architecture Tier') : 'Custom Architecture'}
+              </span>
+              <span className="text-[11px] text-ink-muted dark:text-gray-400">• Total Estimate</span>
+            </div>
             {totalPrice > 0 ? (
               <p className="text-2xl font-extrabold text-ink dark:text-white sm:text-3xl">{formatINR(totalPrice)}</p>
             ) : (
               <p className="text-xl font-extrabold text-ink dark:text-white sm:text-2xl">Pricing on Request</p>
             )}
           </div>
-          <div className="flex flex-shrink-0 items-center gap-1 rounded-full border border-gray-200 px-1 dark:border-gray-700">
+          <div className="flex flex-shrink-0 items-center gap-1 rounded-full border border-gray-200 px-1 dark:border-navy-700 dark:bg-navy-950">
             <button
               onClick={() => setQty((q) => Math.max(1, q - 1))}
               className="flex h-10 w-10 items-center justify-center text-lg text-ink-muted hover:text-brand dark:text-gray-400"
@@ -349,39 +352,97 @@ export function Configurator({
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <button
-            onClick={() => handleAdd(false)}
-            className={cn('btn-outline flex-1', added && 'border-green-500 text-green-600')}
-          >
-            {added ? <><Check className="h-4 w-4" /> Added to Cart</> : <><ShoppingCart className="h-4 w-4" /> {totalPrice > 0 ? 'Add to Cart' : 'Save Configuration'}</>}
-          </button>
-
-          {totalPrice > 0 ? (
-            <button onClick={() => handleAdd(true)} className="btn-brand flex-1">
-              Buy Now →
-            </button>
-          ) : (
+        {/* Dynamic CTAs based on mode (Tiers vs Customise) */}
+        {mode === 'quick' ? (
+          /* QUICK PICK TIERS (BASIC, INTERMEDIATE, ADVANCED) */
+          <div className="flex flex-col gap-2.5 sm:flex-row">
             <button
-              onClick={() => setEnquiryModalOpen(true)}
-              className="btn-brand flex-1"
+              type="button"
+              onClick={() => handleAdd(true)}
+              className="btn-brand flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold shadow-md hover:shadow-brand/25 transition-all active:scale-[0.99]"
             >
-              <FileText className="h-4 w-4" /> Request Official Quote →
+              <span>Buy Now</span>
+              <ArrowRight className="h-4 w-4" />
             </button>
-          )}
-        </div>
 
-        {totalPrice > 0 && (
-          <div className="mt-2 text-center">
             <button
               type="button"
               onClick={() => setEnquiryModalOpen(true)}
-              className="inline-flex items-center gap-1 text-xs text-ink-muted hover:text-brand dark:text-gray-400 transition"
+              className="btn-outline flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold border-brand/60 text-brand hover:bg-brand-50 dark:border-brand/40 dark:text-brand-300 dark:hover:bg-brand/10 transition-all active:scale-[0.99]"
             >
-              <FileText className="h-3.5 w-3.5" /> Need an enterprise quote or procurement invoice? Request Quote
+              <FileText className="h-4 w-4" />
+              <span>Request Estimate</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleAdd(false)}
+              title="Add to Cart"
+              aria-label="Add to Cart"
+              className={cn(
+                'flex items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-brand hover:text-brand dark:border-navy-700 dark:bg-navy-800 dark:text-gray-200 dark:hover:border-brand sm:w-auto',
+                added && 'border-green-500 text-green-600 dark:border-green-500 dark:text-green-400'
+              )}
+            >
+              {added ? (
+                <>
+                  <Check className="h-4 w-4" /> Added
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="h-4 w-4" />
+                  <span className="hidden sm:inline">Add to Cart</span>
+                </>
+              )}
+            </button>
+          </div>
+        ) : (
+          /* CUSTOMISE MODE */
+          <div className="flex flex-col gap-2.5 sm:flex-row">
+            <button
+              type="button"
+              onClick={() => handleAdd(false)}
+              className={cn(
+                'btn-brand flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold shadow-md hover:shadow-brand/25 transition-all active:scale-[0.99]',
+                added && 'bg-techgreen-600 hover:bg-techgreen-700'
+              )}
+            >
+              {added ? (
+                <>
+                  <Check className="h-4 w-4" /> Customisation Saved
+                </>
+              ) : (
+                <>
+                  <Wrench className="h-4 w-4" /> Save Customise
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleAdd(true)}
+              className="btn-outline flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold border-brand/60 text-brand hover:bg-brand-50 dark:border-brand/40 dark:text-brand-300 dark:hover:bg-brand/10 transition-all active:scale-[0.99]"
+            >
+              <span>Buy Now</span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setEnquiryModalOpen(true)}
+              className="flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-ink transition hover:border-brand hover:text-brand dark:border-navy-700 dark:bg-navy-800 dark:text-gray-200 dark:hover:border-brand sm:w-auto"
+            >
+              <FileText className="h-4 w-4" />
+              <span>Request Estimate</span>
             </button>
           </div>
         )}
+
+        <p className="mt-3 text-center text-[11px] text-ink-muted dark:text-gray-400">
+          {mode === 'quick'
+            ? '✓ Verified enterprise hardware spec with genuine OEM parts and warranty.'
+            : '✓ Custom configured specification tailored for your enterprise workloads.'}
+        </p>
       </div>
 
       {/* Quote / Configuration Enquiry Modal */}

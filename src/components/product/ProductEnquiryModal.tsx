@@ -26,9 +26,9 @@ export function ProductEnquiryModal({
 }: ProductEnquiryModalProps) {
   if (!isOpen) return null;
 
-  const defaultSubject = `Quote Request: ${product.name}${
-    configuration.tierLabel ? ` (${configuration.tierLabel})` : ''
-  }`;
+  const defaultSubject = configuration.mode === 'quick' && configuration.tierLabel
+    ? `Estimate Request: ${product.name} (${configuration.tierLabel})`
+    : `Custom Build Estimate Request: ${product.name}`;
 
   // Formatted configuration object for API persistence
   const configSnapshot: Record<string, string> = {};
@@ -63,7 +63,7 @@ export function ProductEnquiryModal({
           </div>
           <div>
             <h2 className="font-display text-lg font-bold sm:text-xl text-ink dark:text-white">
-              Request Hardware Quote
+              Request Hardware Estimate
             </h2>
             <p className="text-xs text-ink-muted dark:text-gray-400 sm:text-sm">
               {product.name}

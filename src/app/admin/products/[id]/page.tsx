@@ -28,7 +28,7 @@ export default async function EditProductPage({ params }: { params: { id: string
 
   return (
     <div className="p-4 md:p-8">
-      <h1 className="font-display text-2xl font-extrabold md:text-3xl">Edit Product</h1>
+      <h1 className="font-display text-2xl font-extrabold md:text-3xl text-ink dark:text-white">Edit Product</h1>
       <p className="mt-1 text-sm text-ink-muted dark:text-gray-400">{product.name}</p>
 
       <ProductForm

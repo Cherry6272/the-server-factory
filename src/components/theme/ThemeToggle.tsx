@@ -8,11 +8,11 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-ink transition hover:bg-brand hover:text-white dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-brand"
-      aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-      title={theme === 'light' ? 'Dark mode' : 'Light mode'}
+      className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-ink transition hover:bg-brand hover:text-white dark:border dark:border-navy-700/80 dark:bg-navy-900 dark:text-gray-200 dark:hover:border-brand dark:hover:bg-brand dark:hover:text-white"
+      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+      {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
     </button>
   );
 }
