@@ -1,15 +1,14 @@
 import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartProvider } from '@/components/cart/CartProvider';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { TopProgressBar } from '@/components/layout/TopProgressBar';
 import { getContactSettings } from '@/lib/site-settings';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -98,6 +97,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className="font-sans">
+        <Suspense fallback={null}>
+          <TopProgressBar />
+        </Suspense>
         <ThemeProvider>
           <CartProvider>
             <Navbar />

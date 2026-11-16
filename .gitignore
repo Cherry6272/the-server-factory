@@ -15,4 +15,5 @@ prisma/migrations/dev/
 
 # Local database snapshots — contain user records and password hashes
 db-backup-*.json
+prisma/backup*.json
 *.tsbuildinfo
