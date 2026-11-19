@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer';
 import { CartProvider } from '@/components/cart/CartProvider';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { TopProgressBar } from '@/components/layout/TopProgressBar';
+import { AiChatWidget } from '@/components/chat/AiChatWidget';
 import { getContactSettings } from '@/lib/site-settings';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
@@ -105,6 +106,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Navbar />
             <main className="min-h-[70vh]">{children}</main>
             <Footer contact={contact} />
+            <AiChatWidget />
           </CartProvider>
         </ThemeProvider>
       </body>
