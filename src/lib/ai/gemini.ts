@@ -88,38 +88,47 @@ export async function askGemini(messages: ChatMessage[]): Promise<string> {
       parts: [{ text: m.content }],
     }));
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  const models = ['gemini-3.8-flash', 'gemini-flash-latest', 'gemini-2.5-flash-lite'];
+  let lastError = null;
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      contents,
-      systemInstruction: {
-        parts: [{ text: SYSTEM_PROMPT }],
-      },
-      generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens: 1000,
-      },
-    }),
-  });
+  for (const model of models) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    console.error('Gemini API Error:', errorData);
-    throw new Error(errorData?.error?.message || `Gemini API request failed with status ${response.status}`);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents,
+          systemInstruction: {
+            parts: [{ text: SYSTEM_PROMPT }],
+          },
+          generationConfig: {
+            temperature: 0.4,
+            maxOutputTokens: 1000,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        lastError = new Error(errorData?.error?.message || `Gemini API request failed with status ${response.status}`);
+        continue;
+      }
+
+      const data = await response.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (text) {
+        return text;
+      }
+    } catch (err: any) {
+      lastError = err;
+    }
   }
 
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-  if (!text) {
-    throw new Error('No response returned from Gemini AI');
-  }
-
-  return text;
+  throw lastError || new Error('No response returned from Gemini AI');
 }
 
