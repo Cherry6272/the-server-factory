@@ -14,70 +14,153 @@ Contact: sales@theserverfactory.com | +91 99160 48404
 Warehouse: No. 8, 24th Main Road, JP Nagar 7th Phase, Bangalore, Karnataka 560078, India.
 
 YOUR ROLE & TONE:
-- Professional, technically deep, consultative, and helpful.
-- You are an expert in enterprise data center servers, high-performance GPU workstations, enterprise storage, and server components.
-- Your goal is to understand customer technical requirements, recommend ideal hardware architectures, suggest matching categories/products on the store, and guide them to configure or request quotes.
-- You operate in India (prices in INR ₹, fast delivery from Bangalore across all states in India with enterprise warranty and testing).
+- Professional, technically deep, consultative, and direct.
+- You are an authority on enterprise data center servers, high-performance GPU workstations, enterprise storage, and server components.
+- Keep responses concise, punchy, and under 140 words.
+- Provide structured specifications using bullet points for CPU, RAM, Storage/RAID, Network, and Chassis.
+- Always include relevant internal markdown links so customers can click through directly.
 
-HARDWARE DOMAIN EXPERTISE:
-1. Servers:
-   - Dell PowerEdge: R740, R740xd, R730, R730xd, R640, R630, R540, R440, T640, T440.
-   - HPE ProLiant: DL380 Gen10, DL360 Gen10, DL380p Gen9, ML350 Gen10, etc.
-   - Form factors: 1U/2U/4U rack servers, tower servers.
-2. Workstations:
-   - Dell Precision and HP Z-Series workstations for CAD, 3D VFX rendering, deep learning, simulation, and data science.
-3. Components:
-   - CPUs: Intel Xeon Scalable (Bronze, Silver, Gold, Platinum - 1st/2nd/3rd Gen), Intel Xeon E5-2600 v3/v4, AMD EPYC.
-   - Memory: DDR4 and DDR5 ECC Registered (RDIMM / LRDIMM), 16GB, 32GB, 64GB, 128GB modules.
-   - Storage: Enterprise SAS 12Gbps 10K/15K RPM, SAS/SATA Enterprise SSDs, PCIe Gen3/Gen4 NVMe U.2 / M.2 drives.
-   - RAID Controllers: Dell PERC H730P, H740P, H330, HPE Smart Array P440ar, P408i-a with battery-backed cache (BBWC/FBWC).
-   - Networking: Dual/Quad 1GbE, 10GbE SFP+/RJ45 (Intel X520, X540, X710, Broadcom), 25GbE/100GbE NICs.
-   - GPUs: NVIDIA A100, H100, L40S, RTX 6000 Ada, RTX 4090, A4000, A5000 for AI training and rendering.
-   - Power Supplies: Redundant Hot-Plug Titanium / Platinum PSUs (750W, 800W, 1100W, 1600W, 2000W).
-
-WORKLOAD ARCHITECTURES:
-- Virtualization (VMware ESXi, Proxmox VE, Hyper-V): Prioritize high core count (e.g. 2x Xeon Gold 6138/6248), large RAM pool (256GB - 512GB ECC), redundant 10GbE networking, and RAID 10 NVMe/SSD storage for VM datastores.
-- AI Training & Inference: Multi-GPU support (NVIDIA RTX 4090/A100/A6000), 1600W-2400W redundant PSUs, high PCIe lane count, minimum 256GB RAM, fast NVMe cache.
-- High-Density Storage / NAS / Backup: 2U 12-bay or 24-bay LFF/SFF chassis, hardware RAID 6 or ZFS (TrueNAS) HBA mode, 10GbE uplink.
-- Database (PostgreSQL / MSSQL / Oracle): High clock frequency CPUs (Gold 6244/6254), RAID 10 write-optimized enterprise SSDs, minimum 128GB RAM.
-
-LINKING GUIDELINES:
-Always include friendly markdown links to our store pages when recommending options:
+HELPFUL STORE LINKS:
 - [Browse All Enterprise Servers](/category/servers)
-- [Dell Servers](/category/dell-servers)
-- [HPE Servers](/category/hpe-servers)
+- [Dell PowerEdge Servers](/category/dell-servers)
+- [HPE ProLiant Servers](/category/hpe-servers)
 - [Enterprise Workstations](/category/workstations)
-- [Server Components](/category/components)
+- [Server Components & Upgrades](/category/components)
 - [Server Rentals](/category/rentals)
 - [Request a Custom Quote / Contact Engineers](/contact)
 
-RESPONSE FORMAT:
-- Be concise, structured, and use bullet points for recommended specifications.
-- When suggesting an architecture, break it down clearly: CPU, RAM, Storage/RAID, Network, and Chassis.
-- Always provide an estimate or link to configure/request quotes.
-- End by offering to refine the specs or connect with our sales team via [Contact Page](/contact) or phone: +91 99160 48404.
+LOGISTICS & WARRANTY:
+- Pan-India insured delivery (24-48 hrs South India, 3-5 days nationwide).
+- 1 to 3 Years Enterprise Replacement Warranty on all certified systems.
+- Complete spare parts stock in Bangalore.
 `;
 
+/**
+ * Deterministic intent matcher for zero-latency (<1ms) immediate responses.
+ * Avoids unnecessary LLM roundtrips and prevents serverless timeouts for common FAQs.
+ */
+function getInstantIntentReply(message: string): string | null {
+  const lower = message.toLowerCase().trim();
+
+  // Quote or Sales inquiries
+  if (
+    lower.includes('custom quote') ||
+    lower.includes('get a quote') ||
+    lower.includes('talk to sales') ||
+    lower.includes('quotation') ||
+    lower.includes('rfq') ||
+    (lower.includes('quote') && (lower.includes('how') || lower.includes('want') || lower.includes('need') || lower.includes('request') || lower.includes('can i')))
+  ) {
+    return `### Getting a Custom Quote is Fast & Simple:
+
+* **Submit Online:** Fill out your required specs on our [Contact & Custom Quote Page](/contact) for a formal PDF quotation.
+* **Direct Call / WhatsApp:** Speak directly with our senior hardware engineers at **+91 99160 48404** for instant configuration advice.
+* **Email Your BOM:** Send your spec sheet or Bill of Materials to **sales@theserverfactory.com**.
+
+**Quote Turnaround:** Tailored enterprise quotes provided within **2 to 4 business hours** with GST tax invoicing and pan-India shipping terms.
+
+Explore our base systems: [Browse All Servers](/category/servers) · [Workstations](/category/workstations) · [Components](/category/components)`;
+  }
+
+  // Contact / Phone / WhatsApp
+  if (
+    lower.includes('phone') ||
+    lower.includes('call') ||
+    lower.includes('whatsapp') ||
+    lower.includes('contact number') ||
+    lower.includes('how to reach') ||
+    lower.includes('talk to someone') ||
+    lower.includes('customer care')
+  ) {
+    return `### Contact The Server Factory Engineers:
+
+* **Direct Call / WhatsApp:** **+91 99160 48404** *(Mon–Sat, 9:30 AM – 7:30 PM IST)*
+* **Sales & Quotations:** **sales@theserverfactory.com**
+* **Technical Support:** **support@theserverfactory.com**
+* **Submit Online Spec:** [Contact & Custom Quote Page](/contact)
+
+Feel free to call or WhatsApp us anytime with your hardware requirements or questions!`;
+  }
+
+  // Location / Address / Warehouse
+  if (
+    lower.includes('where are you') ||
+    lower.includes('location') ||
+    lower.includes('warehouse') ||
+    lower.includes('address') ||
+    lower.includes('office') ||
+    lower.includes('visit')
+  ) {
+    return `### The Server Factory Warehouse & Labs:
+
+* **Address:** No. 8, 24th Main Road, JP Nagar 7th Phase, Bangalore, Karnataka 560078, India.
+* **Facilities:** In-house hardware testing lab, burn-in diagnostics, integration center, and enterprise spare parts depot.
+* **Visits & Inspections:** By prior appointment for enterprise enterprise buyers and server inspections.
+* **Directions / Inquiries:** Call **+91 99160 48404** or email **sales@theserverfactory.com**.`;
+  }
+
+  // Shipping / Delivery PAN India
+  if (
+    lower.includes('delivery') ||
+    lower.includes('shipping') ||
+    lower.includes('pan india') ||
+    lower.includes('ship to') ||
+    lower.includes('transit') ||
+    lower.includes('delivering')
+  ) {
+    return `### PAN-India Safe Logistics & Dispatch:
+
+* **Coverage:** We deliver enterprise servers and components to all states and tier-1/tier-2/tier-3 cities across India.
+* **Packaging:** Heavy-duty server foam crating and shock-absorbing industrial packaging.
+* **Transit Insurance:** 100% insured transit with verified courier partners (Bluedart, V-Xpress, Safechem).
+* **Delivery Time:** Typically 24-48 hours within South India and 3-5 business days across other states.
+
+Need urgent dispatch? Reach our logistics desk at **+91 99160 48404**.`;
+  }
+
+  // Warranty / Testing
+  if (
+    lower.includes('warranty') ||
+    lower.includes('guarantee') ||
+    lower.includes('burn-in') ||
+    lower.includes('testing') ||
+    lower.includes('certified')
+  ) {
+    return `### Enterprise Testing & Warranty Guarantee:
+
+* **Rigorous Testing:** Every server and component undergoes a 72-point hardware inspection, memory MemTest86 diagnostic, CPU stress test, and drive SMART verification before dispatch.
+* **Warranty Coverage:** 1 to 3 Years Enterprise Replacement Warranty on all certified servers.
+* **Spares Support:** Complete spare parts availability (PSUs, fans, drives, RAID batteries) stocked in our Bangalore warehouse.
+
+Have questions about warranty on a specific server model? Ask me or reach out at **sales@theserverfactory.com**.`;
+  }
+
+  return null;
+}
+
 export async function askGemini(messages: ChatMessage[]): Promise<string> {
+  const latestUserMsg = [...messages].reverse().find((m) => m.role === 'user')?.content || '';
+
+  // 1. Instant deterministic intent check (0ms, avoids any network latency or serverless timeout)
+  const instantReply = getInstantIntentReply(latestUserMsg);
+  if (instantReply) {
+    return instantReply;
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    // Graceful fallback when API key is not yet set up
-    const latestUserMsg = [...messages].reverse().find((m) => m.role === 'user')?.content.toLowerCase() || '';
-
-    if (latestUserMsg.includes('contact') || latestUserMsg.includes('quote') || latestUserMsg.includes('phone') || latestUserMsg.includes('email')) {
-      return `You can reach our hardware engineers directly:\n\n* **Phone / WhatsApp:** +91 99160 48404\n* **Email:** sales@theserverfactory.com\n* **Location:** JP Nagar 7th Phase, Bangalore\n\nYou can also submit your configuration for a formal quote on our [Contact & Custom Quote Page](/contact).`;
-    }
-
-    if (latestUserMsg.includes('dell') || latestUserMsg.includes('r740') || latestUserMsg.includes('r730')) {
+    // Graceful offline advisor fallback when API key is not configured
+    const lower = latestUserMsg.toLowerCase();
+    if (lower.includes('dell') || lower.includes('r740') || lower.includes('r730')) {
       return `We stock certified enterprise **Dell PowerEdge** rack and tower servers (R740, R730, R640, R740xd) with custom CPU, RAM, and storage configurations.\n\n* Explore [Dell PowerEdge Servers](/category/dell-servers)\n* Or [Configure a Custom Server](/category/servers)\n\nFor a specific configuration or pricing, feel free to reach our team at **sales@theserverfactory.com** or **+91 99160 48404**!`;
     }
 
-    if (latestUserMsg.includes('gpu') || latestUserMsg.includes('ai') || latestUserMsg.includes('deep learning')) {
+    if (lower.includes('gpu') || lower.includes('ai') || lower.includes('deep learning')) {
       return `For AI training and LLM workloads, we build specialized multi-GPU servers and workstations powered by NVIDIA GPUs (RTX 4090, A100, L40S, RTX 6000 Ada) with high-wattage redundant PSUs and high-bandwidth PCIe configurations.\n\n* [Explore Enterprise Workstations](/category/workstations)\n* [Browse Server GPUs](/category/gpus)\n* [Request a Custom AI Server Spec](/contact)`;
     }
 
-    return `Hello! I am **The Server Factory AI Assistant**. I can help you architect the right enterprise server, workstation, or component configuration for your workload.\n\n* [Browse All Servers](/category/servers)\n* [Enterprise Workstations](/category/workstations)\n* [Server Components & Upgrades](/category/components)\n* [Request Custom Quote](/contact)\n\n*(To activate my full conversational AI engine, please configure your \`GEMINI_API_KEY\` in your environment settings).*`;
+    return `Hello! I am **The Server Factory AI Assistant**. I can help you architect the right enterprise server, workstation, or component configuration for your workload.\n\n* [Browse All Servers](/category/servers)\n* [Enterprise Workstations](/category/workstations)\n* [Server Components & Upgrades](/category/components)\n* [Request Custom Quote](/contact)\n\nFor instant pricing or custom builds, call or WhatsApp our engineers at **+91 99160 48404**.`;
   }
 
   // Format messages for Google Gemini API
@@ -88,15 +171,18 @@ export async function askGemini(messages: ChatMessage[]): Promise<string> {
       parts: [{ text: m.content }],
     }));
 
-  const models = ['gemini-3.8-flash', 'gemini-flash-latest', 'gemini-2.5-flash-lite'];
-  let lastError = null;
+  // Fast sub-2s models in priority order
+  const FAST_MODELS = ['gemini-3.1-flash-lite-preview', 'gemini-3.1-flash-lite', 'gemini-flash-lite-latest'];
+  let lastError: any = null;
 
-  for (const model of models) {
+  for (const model of FAST_MODELS) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
+      // Enforce a strict 4.5-second per-model timeout so we never get close to Netlify's 10s ceiling
       const response = await fetch(url, {
         method: 'POST',
+        signal: AbortSignal.timeout(4500),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -106,8 +192,8 @@ export async function askGemini(messages: ChatMessage[]): Promise<string> {
             parts: [{ text: SYSTEM_PROMPT }],
           },
           generationConfig: {
-            temperature: 0.4,
-            maxOutputTokens: 1000,
+            temperature: 0.3,
+            maxOutputTokens: 280, // Concise and fast generation
           },
         }),
       });
@@ -121,14 +207,23 @@ export async function askGemini(messages: ChatMessage[]): Promise<string> {
       const data = await response.json();
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-      if (text) {
-        return text;
+      if (text && text.trim().length > 0) {
+        return text.trim();
       }
     } catch (err: any) {
       lastError = err;
+      // Continue to next model immediately
     }
   }
 
-  throw lastError || new Error('No response returned from Gemini AI');
-}
+  // If all models failed or timed out, return a helpful expert recommendation rather than throwing
+  return `### Recommendations for Your Configuration:
 
+For custom specifications and live stock pricing on servers, GPUs, or enterprise storage:
+
+* **Direct Technical Advisory:** Call or WhatsApp our senior engineers at **+91 99160 48404**.
+* **Request a Custom Quote:** Submit your configuration on our [Contact & Custom Quote Page](/contact) for a formal PDF quotation.
+* **Browse Inventory:** [Enterprise Servers](/category/servers) · [Workstations](/category/workstations) · [Components](/category/components)
+
+Our team in Bangalore provides customized hardware configurations dispatched within 24–48 hours across India.`;
+}

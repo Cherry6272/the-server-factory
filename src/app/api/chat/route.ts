@@ -10,12 +10,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Messages array is required' }, { status: 400 });
     }
 
-    // Limit context history to the last 12 messages to keep requests fast and focused
+    // Limit context history to the last 8 messages to keep requests fast and focused
     const recentMessages: ChatMessage[] = body.messages
-      .slice(-12)
+      .slice(-8)
       .map((m: any) => ({
         role: m.role === 'assistant' ? 'assistant' : 'user',
-        content: typeof m.content === 'string' ? m.content.trim().slice(0, 2000) : '',
+        content: typeof m.content === 'string' ? m.content.trim().slice(0, 1500) : '',
       }))
       .filter((m: ChatMessage) => m.content.length > 0);
 
@@ -23,18 +23,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Valid user message is required' }, { status: 400 });
     }
 
-    const reply = await askGemini(recentMessages);
-    return NextResponse.json({ reply });
+    // 7.5-second hard ceiling to strictly beat Netlify's 10s gateway timeout
+    const timeoutPromise = new Promise<string>((resolve) => {
+      setTimeout(() => {
+        resolve(
+          `### The Server Factory Hardware Advisory\n\nFor real-time pricing, stock availability, and customized server builds:\n\n* **Call or WhatsApp Engineers:** **+91 99160 48404**\n* **Formal RFQ / Quotation:** [Submit Spec on Contact Page](/contact)\n* **Email:** **sales@theserverfactory.com**\n\nOur team in Bangalore provides custom configurations dispatched within 24–48 hours across India.`
+        );
+      }, 7500);
+    });
+
+    const reply = await Promise.race([askGemini(recentMessages), timeoutPromise]);
+
+    return NextResponse.json({ reply }, { status: 200 });
   } catch (err: any) {
     console.error('Chat API Error:', err);
     return NextResponse.json(
       {
         reply:
-          "I'm currently having trouble connecting to the AI service. For immediate technical assistance or quotations, please call or WhatsApp our engineering team at **+91 99160 48404** or email **sales@theserverfactory.com**.",
-        error: err?.message || 'Internal server error',
+          "For immediate technical assistance or quotations, please call or WhatsApp our engineering team directly at **+91 99160 48404** or submit your requirement on our [Contact & Custom Quote Page](/contact).",
       },
-      { status: 200 } // Return 200 with fallback text so UI displays friendly message rather than a hard crash
+      { status: 200 }
     );
   }
 }
-

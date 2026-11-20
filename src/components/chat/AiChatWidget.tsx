@@ -113,17 +113,26 @@ export function AiChatWidget() {
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
+        signal: AbortSignal.timeout(8500),
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
         }),
       });
 
-      const data = await res.json();
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {
+        data = null;
+      }
+
       const assistantMsg: Message = {
         id: String(Date.now() + 1),
         role: 'assistant',
-        content: data.reply || 'Thank you for reaching out. Please connect with our team at sales@theserverfactory.com.',
+        content:
+          data?.reply ||
+          'For immediate assistance or tailored quotes, please call our engineers at **+91 99160 48404** or email **sales@theserverfactory.com**.',
         createdAt: Date.now(),
       };
 
@@ -136,7 +145,7 @@ export function AiChatWidget() {
           id: String(Date.now() + 1),
           role: 'assistant',
           content:
-            "I'm temporarily unable to connect to the server. Please call or WhatsApp our engineers directly at **+91 99160 48404** or email **sales@theserverfactory.com**.",
+            "I'm temporarily unable to reach the server. Please call or WhatsApp our engineers directly at **+91 99160 48404** or email **sales@theserverfactory.com**.",
           createdAt: Date.now(),
         },
       ]);
@@ -333,6 +342,27 @@ function MessageContent({ content, isUser, onLinkClick }: { content: string; isU
       {lines.map((line, idx) => {
         const trimmed = line.trim();
         if (!trimmed) return <div key={idx} className="h-1" />;
+
+        // Headings: ### Title or ## Title
+        if (trimmed.startsWith('### ') || trimmed.startsWith('## ')) {
+          const headingText = trimmed.replace(/^#{2,3}\s+/, '');
+          return (
+            <div key={idx} className="pt-1 pb-0.5 font-bold text-ink dark:text-white">
+              {renderFormattedText(headingText, onLinkClick)}
+            </div>
+          );
+        }
+
+        // Numbered list: 1. Item
+        const numMatch = trimmed.match(/^(\d+)\.\s+(.*)/);
+        if (numMatch) {
+          return (
+            <div key={idx} className="flex items-start gap-1.5 pl-1">
+              <span className="flex-shrink-0 font-bold text-brand dark:text-brand-300">{numMatch[1]}.</span>
+              <div>{renderFormattedText(numMatch[2], onLinkClick)}</div>
+            </div>
+          );
+        }
 
         // Bullet points
         if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
